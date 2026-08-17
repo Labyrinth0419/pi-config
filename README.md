@@ -83,3 +83,5 @@ cd pi-config
 - 修改仓库后重新跑一遍 setup(交互式菜单或 `--sync`;Windows 是复制,记得重跑)
 - `pi-web-access` 在无头服务器上需要 ffmpeg/yt-dlp,按需安装
 - `extensions/` 里的本地扩展来自 comonad/pi-config(MIT),改动前保留出处声明
+- **Windows shell**:`machines/win-personal/settings.json` 指了 `shellPath`(Git Bash),setup 自动装 `@4fu/pi-pwsh`(用 PowerShell 7 替换 bash 工具;真 bash 用 `bash -c` 在 pwsh 里跑)
+- `settings.json` 采用合并策略:仓库(含机器覆盖)的键覆盖手动改动,pi 管理的键(`packages`/`lastChangelogVersion`)保留

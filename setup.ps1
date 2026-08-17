@@ -12,7 +12,7 @@ $ErrorActionPreference = 'Stop'
 
 $repo = $PSScriptRoot
 $piDir = Join-Path $HOME '.pi\agent'
-$coreFiles = @('AGENTS.md', 'settings.json', 'models.json', 'keybindings.json')
+$coreFiles = @('AGENTS.md', 'models.json', 'keybindings.json')
 $coreDirs = @('extensions', 'skills', 'prompts')
 $extPkgs = @('pi-subagents', 'pi-mcp-adapter', 'pi-web-access', 'pi-blackhole', 'pi-background-tasks')
 
@@ -46,11 +46,23 @@ function Sync-Core {
 function Apply-Overlay([string]$m) {
   $mDir = Join-Path $repo "machines\$m"
   Write-Host "  覆盖层: $m"
-  foreach ($f in @('settings.json', 'mcp.json')) {
-    if (Test-Path (Join-Path $mDir $f)) {
-      Copy-Item -Force (Join-Path $mDir $f) (Join-Path $piDir $f)
-      Write-Host "  + machines/$m/$f"
+  # settings.json: 保留已存在配置(含 pi 管理的 packages 等键),合并 core + 机器覆盖
+  $settings = [ordered]@{}
+  if (Test-Path (Join-Path $piDir 'settings.json')) {
+    $existing = Get-Content (Join-Path $piDir 'settings.json') -Raw | ConvertFrom-Json
+    foreach ($p in $existing.PSObject.Properties) { $settings[$p.Name] = $p.Value }
+  }
+  foreach ($src in @((Join-Path $repo 'settings.json'), (Join-Path $mDir 'settings.json'))) {
+    if (Test-Path $src) {
+      $srcObj = Get-Content $src -Raw | ConvertFrom-Json
+      foreach ($p in $srcObj.PSObject.Properties) { $settings[$p.Name] = $p.Value }
     }
+  }
+  $settings | ConvertTo-Json -Depth 6 | Set-Content (Join-Path $piDir 'settings.json') -Encoding UTF8
+  Write-Host "  + settings.json (merge core+overlay)"
+  if (Test-Path (Join-Path $mDir 'mcp.json')) {
+    Copy-Item -Force (Join-Path $mDir 'mcp.json') (Join-Path $piDir 'mcp.json')
+    Write-Host "  + machines/$m/mcp.json"
   }
   if (Test-Path (Join-Path $mDir 'extensions')) {
     New-Item -ItemType Directory -Force (Join-Path $piDir 'extensions') | Out-Null
@@ -109,6 +121,10 @@ function Ensure-Extensions {
   Say "确保核心扩展"
   foreach ($p in $extPkgs) {
     try { pi install "npm:$p" | Out-Null; Write-Host "  + npm:$p" } catch { Warn "npm:$p 安装失败" }
+  }
+  # Windows 专属:PowerShell 适配器(替换 bash 工具为 pwsh)
+  if ($script:M -eq 'win-personal') {
+    try { pi install 'npm:@4fu/pi-pwsh' | Out-Null; Write-Host "  + npm:@4fu/pi-pwsh (win)" } catch { Warn "npm:@4fu/pi-pwsh 安装失败" }
   }
 }
 

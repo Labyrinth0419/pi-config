@@ -9,7 +9,7 @@ set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PI_DIR="${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}"
-CORE_FILES=(AGENTS.md settings.json models.json keybindings.json)
+CORE_FILES=(AGENTS.md models.json keybindings.json)
 CORE_DIRS=(extensions skills prompts)
 EXT_PKGS=(pi-subagents pi-mcp-adapter pi-web-access pi-blackhole pi-background-tasks)
 
@@ -52,12 +52,27 @@ sync_core() {
 apply_overlay() {
   local m="$1" M_DIR="$REPO/machines/$1"
   echo "  覆盖层: $m"
-  for f in settings.json mcp.json; do
-    if [ -f "$M_DIR/$f" ]; then
-      cp -f "$M_DIR/$f" "$PI_DIR/$f"
-      echo "  + machines/$m/$f"
-    fi
-  done
+  # settings.json: 保留已存在配置(含 pi 管理的 packages 等键),合并 core + 机器覆盖
+  if command -v node >/dev/null 2>&1; then
+    node -e '
+      const fs=require("fs");
+      const [existing, core, overlay, out] = process.argv.slice(1);
+      const base = fs.existsSync(existing) ? JSON.parse(fs.readFileSync(existing,"utf8")) : {};
+      for (const p of [core, overlay]) {
+        if (fs.existsSync(p)) Object.assign(base, JSON.parse(fs.readFileSync(p,"utf8")));
+      }
+      fs.writeFileSync(out, JSON.stringify(base, null, 2));
+    ' "$PI_DIR/settings.json" "$REPO/settings.json" "$M_DIR/settings.json" "$PI_DIR/settings.json"
+    echo "  + settings.json (merge core+overlay)"
+  else
+    cp -f "$REPO/settings.json" "$PI_DIR/settings.json"
+    [ -f "$M_DIR/settings.json" ] && cp -f "$M_DIR/settings.json" "$PI_DIR/settings.json"
+    echo "  + settings.json (replace fallback)"
+  fi
+  if [ -f "$M_DIR/mcp.json" ]; then
+    cp -f "$M_DIR/mcp.json" "$PI_DIR/mcp.json"
+    echo "  + machines/$m/mcp.json"
+  fi
   if [ -d "$M_DIR/extensions" ]; then
     mkdir -p "$PI_DIR/extensions"
     cp -rf "$M_DIR/extensions/." "$PI_DIR/extensions/"
@@ -119,6 +134,10 @@ ensure_extensions() {
   for p in "${EXT_PKGS[@]}"; do
     pi install "npm:$p" >/dev/null 2>&1 && echo "  + npm:$p" || warn "npm:$p 安装失败"
   done
+  # Windows 专属:PowerShell 适配器(替换 bash 工具为 pwsh)
+  if [ "$MACHINE" = "win-personal" ]; then
+    pi install "npm:@4fu/pi-pwsh" >/dev/null 2>&1 && echo "  + npm:@4fu/pi-pwsh (win)" || warn "npm:@4fu/pi-pwsh 安装失败"
+  fi
 }
 
 # --- vendored 扩展(源码入库,构建产物不入库) ---------------------------
