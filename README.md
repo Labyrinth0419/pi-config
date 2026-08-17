@@ -14,18 +14,32 @@
 ```bash
 git clone <你的仓库地址> pi-config
 cd pi-config
-./setup.sh            # Linux / Git Bash
+./setup.sh            # Linux / Git Bash —— 交互式 TUI
 # 或 Windows 原生:
-.\setup.ps1
+.\setup.ps1           # 交互式 TUI
 ```
+
+运行后出现交互菜单:
+- `1` 全量同步(自动检测机器)
+- `2` 选择机器覆盖层
+- `3` 管理扩展(勾选装/卸)
+- `4` 管理 API 密钥
+- `5` 环境自检
+
+**非交互模式**(自动化/CI/无 TTY):
+```bash
+./setup.sh --sync
+# 或
+.\setup.ps1 -Sync
+```
+
+指定机器:`PI_MACHINE=linux-headless ./setup.sh` 或 `.\setup.ps1 -Machine linux-headless`,或菜单里的"选择机器覆盖层"。
 
 脚本会:
 1. 检测机器 → 应用对应 `machines/<name>/` 覆盖层
 2. 把核心配置 + 覆盖层同步到 `~/.pi/agent/`
 3. 处理 `auth.json`:已有密钥保留;本机有 `~/.claude`/`~/.codex` 则自动提取;都没有则用模板
 4. `pi install` 装齐核心扩展(subagents / mcp-adapter / web-access / blackhole / background-tasks)
-
-指定机器:`PI_MACHINE=linux-headless ./setup.sh` 或 `.\setup.ps1 -Machine linux-headless`。
 
 ## 目录
 
@@ -35,7 +49,8 @@ cd pi-config
 | `settings.json` | 默认 provider/model/思考档位(Ctrl+P 模型列表) |
 | `models.json` | deepseek + lucen 双 provider 定义 |
 | `keybindings.json` | 快捷键(ctrl+p 等已避免与模型切换冲突) |
-| `extensions/` `skills/` `prompts/` | 自写扩展 / skill / 交接模板(handoff, pickup) |
+| `extensions/` | 本地扩展:slow-mode / notify / clipboard / rewind / branch-sessions / stash / questionnaire / environment-context(精选自 comonad/pi-config,MIT) |
+| `skills/` `prompts/` | 自写 skill / 交接模板(handoff, pickup) |
 | `machines/win-personal/` | Windows:drawio MCP(引用 `~/.codex` 本地路径) |
 | `machines/linux-personal/` | 直接用核心配置 |
 | `machines/linux-headless/` | 无头服务器:默认 deepseek、thinking high |
@@ -61,5 +76,6 @@ cd pi-config
 
 ## 注意
 
-- 修改仓库后重新跑一遍 setup(Windows 是复制,记得重跑;Linux 无头端同理)
+- 修改仓库后重新跑一遍 setup(交互式菜单或 `--sync`;Windows 是复制,记得重跑)
 - `pi-web-access` 在无头服务器上需要 ffmpeg/yt-dlp,按需安装
+- `extensions/` 里的本地扩展来自 comonad/pi-config(MIT),改动前保留出处声明
