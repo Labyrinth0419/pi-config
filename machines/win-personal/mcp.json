@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "drawio": {
+      "command": "node",
+      "args": ["C:\\Users\\lenovo\\.codex\\mcp-servers\\drawio-mcp\\mcp-tool-server\\src\\index.js"]
+    }
+  }
+}

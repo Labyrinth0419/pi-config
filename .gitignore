@@ -1,0 +1,8 @@
+# 密钥与运行时产物 —— 绝不上库
+auth.json
+sessions/
+models-store.json
+bin/
+npm/
+node_modules/
+*.session.jsonl

@@ -1,0 +1,65 @@
+# pi-config
+
+个人 pi-coding-agent 配置库,一份核心配置跑三端:**Windows 个人机 / Linux 个人机 / Linux 无头服务器**。
+
+结构:`machines/` 里的覆盖层吸收跨机器差异,核心配置三端共用。密钥不进库。
+
+## 安装 pi(仅需一次)
+
+- Windows:`scoop install pi-coding-agent`
+- Linux (npm):`npm install -g @earendil-works/pi-coding-agent`
+
+## 部署(新机器)
+
+```bash
+git clone <你的仓库地址> pi-config
+cd pi-config
+./setup.sh            # Linux / Git Bash
+# 或 Windows 原生:
+.\setup.ps1
+```
+
+脚本会:
+1. 检测机器 → 应用对应 `machines/<name>/` 覆盖层
+2. 把核心配置 + 覆盖层同步到 `~/.pi/agent/`
+3. 处理 `auth.json`:已有密钥保留;本机有 `~/.claude`/`~/.codex` 则自动提取;都没有则用模板
+4. `pi install` 装齐核心扩展(subagents / mcp-adapter / web-access / blackhole / background-tasks)
+
+指定机器:`PI_MACHINE=linux-headless ./setup.sh` 或 `.\setup.ps1 -Machine linux-headless`。
+
+## 目录
+
+| 路径 | 说明 |
+|---|---|
+| `AGENTS.md` | 全局行为规范 + 自动子代理规则(三端通用) |
+| `settings.json` | 默认 provider/model/思考档位(Ctrl+P 模型列表) |
+| `models.json` | deepseek + lucen 双 provider 定义 |
+| `keybindings.json` | 快捷键(ctrl+p 等已避免与模型切换冲突) |
+| `extensions/` `skills/` `prompts/` | 自写扩展 / skill / 交接模板(handoff, pickup) |
+| `machines/win-personal/` | Windows:drawio MCP(引用 `~/.codex` 本地路径) |
+| `machines/linux-personal/` | 直接用核心配置 |
+| `machines/linux-headless/` | 无头服务器:默认 deepseek、thinking high |
+| `setup.sh` / `setup.ps1` | 一键部署 |
+
+## 密钥
+
+- `auth.json` **已 gitignore**,由 setup 脚本自动生成/保留,绝不上库
+- 换机器时 setup 会自动从 `~/.claude`/`~/.codex` 提取;没有就填 `auth.json` 或 `pi /login`
+
+## 日常
+
+- `pi` — 默认 lucen gpt-5.6-sol
+- `Shift+Tab` 循环思考档位,`/thinking <level>`,`Ctrl+P` 切模型
+- 子代理:`Use reviewer to review this diff` / `Ask oracle ...`(规则见 `AGENTS.md`)
+
+## 扩展模型↔档位绑定(可选)
+
+`settings.json` 的 `enabledModels` 支持 `model:level` 后缀,如 `"gpt-5.6-sol:max"` 让 Ctrl+P 切过去自带档位:
+```json
+"enabledModels": ["gpt-5.6-sol:max", "deepseek-v4-flash:medium"]
+```
+
+## 注意
+
+- 修改仓库后重新跑一遍 setup(Windows 是复制,记得重跑;Linux 无头端同理)
+- `pi-web-access` 在无头服务器上需要 ffmpeg/yt-dlp,按需安装

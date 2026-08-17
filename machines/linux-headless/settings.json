@@ -1,0 +1,9 @@
+{
+  "theme": "dark",
+  "defaultProvider": "deepseek",
+  "defaultModel": "deepseek-v4-pro",
+  "defaultThinkingLevel": "high",
+  "enabledModels": [
+    "deepseek-v4-*"
+  ]
+}

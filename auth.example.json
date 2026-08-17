@@ -1,0 +1,4 @@
+{
+  "deepseek": { "type": "api_key", "key": "" },
+  "lucen": { "type": "api_key", "key": "" }
+}
