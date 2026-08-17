@@ -1,0 +1,2 @@
+https://raw.githubusercontent.com/gandazgul/plannotator-pi-extension-compiled/v0.24.0/plannotator.html|plannotator.html
+https://raw.githubusercontent.com/gandazgul/plannotator-pi-extension-compiled/v0.24.0/review-editor.html|review-editor.html

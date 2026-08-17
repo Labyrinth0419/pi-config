@@ -40,6 +40,7 @@ cd pi-config
 2. 把核心配置 + 覆盖层同步到 `~/.pi/agent/`
 3. 处理 `auth.json`:已有密钥保留;本机有 `~/.claude`/`~/.codex` 则自动提取;都没有则用模板
 4. `pi install` 装齐核心扩展(subagents / mcp-adapter / web-access / blackhole / background-tasks)
+5. 构建并安装 `vendor/` 里的扩展(plannotator:源码入库,`npm install` + `node build.mjs` 后 `pi install`)
 
 ## 目录
 
@@ -50,7 +51,9 @@ cd pi-config
 | `models.json` | deepseek + lucen 双 provider 定义 |
 | `keybindings.json` | 快捷键(ctrl+p 等已避免与模型切换冲突) |
 | `extensions/` | 本地扩展:slow-mode / notify / clipboard / rewind / branch-sessions / stash / questionnaire / environment-context(精选自 comonad/pi-config,MIT) |
-| `skills/` `prompts/` | 自写 skill / 交接模板(handoff, pickup) |
+| `skills/` | code-review / research / diagnosing-bugs / prototype(精选自 mattpocock/skills,经 comonad vendored,MIT) |
+| `prompts/` | 交接模板(handoff, pickup) |
+| `vendor/plannotator/` | 计划模式扩展(源码入库,setup 自动构建+安装;构建产物 gitignore) |
 | `machines/win-personal/` | Windows:drawio MCP(引用 `~/.codex` 本地路径) |
 | `machines/linux-personal/` | 直接用核心配置 |
 | `machines/linux-headless/` | 无头服务器:默认 deepseek、thinking high |

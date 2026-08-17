@@ -1,0 +1,54 @@
+{
+  "name": "@gandazgul/plannotator-pi-extension-compiled",
+  "version": "0.24.0",
+  "description": "Compiled wrapper for @plannotator/pi-extension to support Deno consumption",
+  "type": "module",
+  "license": "MIT OR Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gandazgul/plannotator-pi-extension-compiled.git"
+  },
+  "homepage": "https://github.com/gandazgul/plannotator-pi-extension-compiled",
+  "bugs": {
+    "url": "https://github.com/gandazgul/plannotator-pi-extension-compiled/issues"
+  },
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./server": "./dist/server.mjs",
+    "./assets": "./dist/assets.mjs"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "prepublishOnly": "npm run build"
+  },
+  "files": [
+    "dist",
+    "plannotator.html",
+    "review-editor.html",
+    "plannotator.json",
+    "LICENSE",
+    "LICENSE-MIT",
+    "LICENSE-APACHE",
+    "README.md"
+  ],
+  "dependencies": {
+    "turndown": "^7.2.4",
+    "@joplin/turndown-plugin-gfm": "^1.0.64"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": ">=0.80.2",
+    "@earendil-works/pi-agent-core": ">=0.80.2",
+    "@earendil-works/pi-ai": ">=0.80.2",
+    "@earendil-works/pi-tui": ">=0.80.2"
+  },
+  "devDependencies": {
+    "@plannotator/pi-extension": "0.24.0",
+    "esbuild": "^0.28.1"
+  },
+  "main": "./dist/index.mjs",
+  "pi": {
+    "extensions": [
+      "./dist/index.mjs"
+    ]
+  }
+}

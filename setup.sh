@@ -121,6 +121,33 @@ ensure_extensions() {
   done
 }
 
+# --- vendored 扩展(源码入库,构建产物不入库) ---------------------------
+ensure_vendor() {
+  if ! command -v pi >/dev/null 2>&1; then return; fi
+  if [ -d "$REPO/vendor" ] && compgen -G "$REPO/vendor/*/" >/dev/null 2>&1; then
+    say "构建并安装 vendored 扩展"
+    for v in "$REPO"/vendor/*/; do
+      local name
+      name="$(basename "$v")"
+      # 大体积 UI 资产不入库,按 download-assets.txt 从上游拉取
+      if [ -f "$v/download-assets.txt" ]; then
+        while IFS='|' read -r url dest; do
+          [ -n "$url" ] || continue
+          if [ ! -f "$v/$dest" ]; then
+            curl -fsSL "$url" -o "$v/$dest" && echo "  + 下载 $name/$dest" || warn "下载 $name/$dest 失败"
+          fi
+        done < "$v/download-assets.txt"
+      fi
+      if (cd "$v" && npm install >/dev/null 2>&1 && node build.mjs >/dev/null 2>&1); then
+        echo "  + 构建 $name"
+        pi install "$v" >/dev/null 2>&1 && echo "  + 安装 $name" || warn "$name 安装失败"
+      else
+        warn "$name 构建失败"
+      fi
+    done
+  fi
+}
+
 full_sync() {
   hr
   say "全量同步 (机器: $MACHINE)"
@@ -128,6 +155,7 @@ full_sync() {
   apply_overlay "$MACHINE"
   ensure_auth
   ensure_extensions
+  ensure_vendor
   hr
 }
 

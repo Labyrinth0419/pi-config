@@ -6,3 +6,11 @@ bin/
 npm/
 node_modules/
 *.session.jsonl
+
+# vendor 扩展的构建产物(源码入库,dist 由 setup 构建)
+vendor/*/node_modules/
+vendor/*/dist/
+
+# plannotator 大体积 UI 资产(setup 时按 download-assets.txt 从上游拉取)
+vendor/plannotator/plannotator.html
+vendor/plannotator/review-editor.html

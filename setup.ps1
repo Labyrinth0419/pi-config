@@ -112,6 +112,44 @@ function Ensure-Extensions {
   }
 }
 
+# --- vendored 扩展(源码入库,构建产物不入库) ---
+function Ensure-Vendor {
+  if (-not (Get-Command pi -ErrorAction SilentlyContinue)) { return }
+  $vdir = Join-Path $repo 'vendor'
+  if (Test-Path $vdir) {
+    $dirs = @(Get-ChildItem $vdir -Directory)
+    if ($dirs.Count -gt 0) {
+      Say "构建并安装 vendored 扩展"
+      foreach ($d in $dirs) {
+        try {
+          # 大体积 UI 资产不入库,按 download-assets.txt 从上游拉取
+          $dlFile = Join-Path $d.FullName 'download-assets.txt'
+          if (Test-Path $dlFile) {
+            foreach ($line in Get-Content $dlFile) {
+              if ([string]::IsNullOrWhiteSpace($line)) { continue }
+              $parts = $line.Split('|')
+              $url = $parts[0].Trim(); $dest = $parts[1].Trim()
+              if (-not (Test-Path (Join-Path $d.FullName $dest))) {
+                try { Invoke-WebRequest -Uri $url -OutFile (Join-Path $d.FullName $dest); Write-Host "  + 下载 $($d.Name)/$dest" }
+                catch { Warn "下载 $($d.Name)/$dest 失败: $($_.Exception.Message)" }
+              }
+            }
+          }
+          Push-Location $d.FullName
+          npm install | Out-Null
+          node build.mjs | Out-Null
+          Pop-Location
+          pi install $d.FullName | Out-Null
+          Write-Host "  + $($d.Name)"
+        } catch {
+          Pop-Location -ErrorAction SilentlyContinue
+          Warn "$($d.Name) 构建/安装失败: $($_.Exception.Message)"
+        }
+      }
+    }
+  }
+}
+
 function Full-Sync {
   Hr
   Say "全量同步 (机器: $script:M)"
@@ -119,6 +157,7 @@ function Full-Sync {
   Apply-Overlay $script:M
   Ensure-Auth
   Ensure-Extensions
+  Ensure-Vendor
   Hr
 }
 
