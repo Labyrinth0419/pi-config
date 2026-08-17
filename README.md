@@ -12,7 +12,8 @@
 ## 部署(新机器)
 
 ```bash
-git clone <你的仓库地址> pi-config
+git clone git@github.com:Labyrinth0419/pi-config.git pi-config
+# 或 https: git clone https://github.com/Labyrinth0419/pi-config.git pi-config
 cd pi-config
 ./setup.sh            # Linux / Git Bash —— 交互式 TUI
 # 或 Windows 原生:
