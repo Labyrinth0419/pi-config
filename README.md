@@ -84,5 +84,6 @@ cd pi-config
 - `pi-web-access` 在无头服务器上需要 ffmpeg/yt-dlp,按需安装
 - `extensions/` 里的本地扩展来自 comonad/pi-config(MIT),改动前保留出处声明
 - **Windows shell**:`machines/win-personal/settings.json` 指了 `shellPath`(Git Bash),setup 自动装 `@4fu/pi-pwsh`(用 PowerShell 7 替换 bash 工具;真 bash 用 `bash -c` 在 pwsh 里跑)
+- **Windows fusion/background-tasks**:scoop 装 pi 没有 `@earendil-works/pi-coding-agent` npm 包,`fusion` 起子进程会报环境问题;要用就 `cd ~/.pi/agent/npm && npm install --no-save @earendil-works/pi-coding-agent@0.84.2`(详见 win-personal/README)
 - `settings.json` 采用合并策略:仓库(含机器覆盖)的键覆盖手动改动,pi 管理的键(`packages`/`lastChangelogVersion`)保留
 - **加 skill**:在 `skills/` 下建目录放 `SKILL.md`(frontmatter 必须带 `name` 和 `description`)。**别在 `skills/` 目录放 README/说明文件**——pi 会把它当 skill 解析并报 "description is required"
