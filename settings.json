@@ -1,9 +1,12 @@
 {
   "theme": "dark",
-  "defaultProvider": "lucen",
-  "defaultModel": "gpt-5.6-sol",
+  "defaultProvider": "xiaomi",
+  "defaultModel": "mimo-v2.5",
   "defaultThinkingLevel": "max",
   "enabledModels": [
+    "mimo-v2.5",
+    "mimo-v2.5-pro",
+    "mimo-v2.5-pro-ultraspeed",
     "deepseek-v4-*",
     "gpt-5.6-sol",
     "gpt-5.6-terra",
