@@ -14,7 +14,7 @@ $repo = $PSScriptRoot
 $piDir = Join-Path $HOME '.pi\agent'
 $coreFiles = @('AGENTS.md', 'models.json', 'keybindings.json')
 $coreDirs = @('extensions', 'skills', 'prompts')
-$extPkgs = @('pi-subagents', 'pi-mcp-adapter', 'pi-web-access', 'pi-blackhole', 'pi-background-tasks')
+$extPkgs = @('pi-subagents', 'pi-mcp-adapter', 'pi-web-access', 'pi-blackhole', 'pi-background-tasks', 'pi-hashline-edit')
 
 function Say([string]$m)  { Write-Host "==> $m" -ForegroundColor Green }
 function Warn([string]$m) { Write-Host "!! $m" -ForegroundColor Yellow }
