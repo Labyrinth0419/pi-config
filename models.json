@@ -133,6 +133,15 @@
           "compat": {
             "requiresReasoningContentOnAssistantMessages": true,
             "thinkingFormat": "deepseek"
+          },
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": "low",
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": "high",
+            "max": "high"
           }
         },
         {
@@ -146,6 +155,15 @@
           "compat": {
             "requiresReasoningContentOnAssistantMessages": true,
             "thinkingFormat": "deepseek"
+          },
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": "low",
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": "high",
+            "max": "high"
           }
         },
         {
@@ -159,6 +177,15 @@
           "compat": {
             "requiresReasoningContentOnAssistantMessages": true,
             "thinkingFormat": "deepseek"
+          },
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": "low",
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": "high",
+            "max": "high"
           }
         }
       ]
