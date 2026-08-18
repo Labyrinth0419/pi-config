@@ -9,5 +9,15 @@
     "gpt-5.6-terra",
     "gpt-5.6-luna",
     "gpt-5.5"
-  ]
+  ],
+  "pi-blackhole": {
+    "dropperFallbackModels": [
+      {
+        "provider": "deepseek",
+        "id": "deepseek-v4-flash",
+        "thinking": "low",
+        "cooldownHours": 0.5
+      }
+    ]
+  }
 }
