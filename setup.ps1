@@ -11,7 +11,14 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $repo = $PSScriptRoot
-$piDir = Join-Path $HOME '.pi\agent'
+$piDir = if ($env:PI_CODING_AGENT_DIR) { $env:PI_CODING_AGENT_DIR } else { Join-Path $HOME '.pi\agent' }
+$webConfigDir = if ($env:PI_CODING_AGENT_DIR) {
+  $piDir
+} elseif ($env:XDG_CONFIG_HOME) {
+  Join-Path $env:XDG_CONFIG_HOME 'pi'
+} else {
+  Join-Path $HOME '.pi'
+}
 $coreFiles = @('AGENTS.md', 'models.json', 'keybindings.json')
 $coreDirs = @('extensions', 'skills', 'prompts')
 $extPkgs = @('pi-subagents', 'pi-mcp-adapter', 'pi-web-access', 'pi-blackhole', 'pi-background-tasks', 'pi-hashline-edit')
@@ -23,7 +30,7 @@ function Hr { Write-Host ('-' * 36) -ForegroundColor DarkGray }
 function Resolve-Machine {
   if ($Machine) { return $Machine }
   if ($env:PI_MACHINE) { return $env:PI_MACHINE }
-  if ($IsWindows) { return 'win-personal' }
+  if ($env:OS -eq 'Windows_NT' -or [System.Environment]::OSVersion.Platform -eq [System.PlatformID]::Win32NT) { return 'win-personal' }
   if ($env:DISPLAY -or $env:WAYLAND_DISPLAY) { return 'linux-personal' }
   return 'linux-headless'
 }
@@ -36,11 +43,18 @@ function Sync-Core {
     Copy-Item -Force (Join-Path $repo $f) (Join-Path $piDir $f)
     Write-Host "  + $f"
   }
+  New-Item -ItemType Directory -Force $webConfigDir | Out-Null
+  Copy-Item -Force (Join-Path $repo 'web-search.json') (Join-Path $webConfigDir 'web-search.json')
+  Write-Host "  + web-search.json"
   foreach ($d in $coreDirs) {
     New-Item -ItemType Directory -Force (Join-Path $piDir $d) | Out-Null
     Get-ChildItem (Join-Path $repo $d) -Force | Copy-Item -Destination (Join-Path $piDir $d) -Recurse -Force
     Write-Host "  + $d/"
   }
+  $blackholeDir = Join-Path $piDir 'pi-blackhole'
+  New-Item -ItemType Directory -Force $blackholeDir | Out-Null
+  Copy-Item -Force (Join-Path $repo 'pi-blackhole\pi-blackhole-config.json') (Join-Path $blackholeDir 'pi-blackhole-config.json')
+  Write-Host "  + pi-blackhole/pi-blackhole-config.json"
 }
 
 function Apply-Overlay([string]$m) {
@@ -117,14 +131,27 @@ function Ensure-Auth {
 
 # --- 扩展 ---
 function Ensure-Extensions {
-  if (-not (Get-Command pi -ErrorAction SilentlyContinue)) { Warn "pi 未安装 — 先装 pi 再重跑 setup"; return }
+  if (-not (Get-Command pi -ErrorAction SilentlyContinue)) { throw "pi 未安装 — 先装 pi 再重跑 setup" }
   Say "确保核心扩展"
   foreach ($p in $extPkgs) {
-    try { pi install "npm:$p" | Out-Null; Write-Host "  + npm:$p" } catch { Warn "npm:$p 安装失败" }
+    $spec = if ($p -eq 'pi-web-access') { 'npm:pi-web-access@0.23.0' } else { "npm:$p" }
+    & pi install $spec | Out-Null
+    if ($LASTEXITCODE -ne 0) { throw "$spec 安装失败 (exit code $LASTEXITCODE)" }
+    Write-Host "  + $spec"
   }
+  $webAccessDir = Join-Path $piDir 'npm\node_modules\pi-web-access'
+  $patchScript = Join-Path $repo 'vendor\pi-web-access-patch.mjs'
+  if (-not (Test-Path $webAccessDir) -or -not (Test-Path $patchScript) -or -not (Get-Command node -ErrorAction SilentlyContinue)) {
+    throw "pi-web-access 补丁前置条件缺失"
+  }
+  & node $patchScript $webAccessDir
+  if ($LASTEXITCODE -ne 0) { throw "pi-web-access 补丁未应用 (exit code $LASTEXITCODE)" }
+  Write-Host "  + pi-web-access summary thinking patch"
   # Windows 专属:PowerShell 适配器(替换 bash 工具为 pwsh)
   if ($script:M -eq 'win-personal') {
-    try { pi install 'npm:@4fu/pi-pwsh' | Out-Null; Write-Host "  + npm:@4fu/pi-pwsh (win)" } catch { Warn "npm:@4fu/pi-pwsh 安装失败" }
+    & pi install 'npm:@4fu/pi-pwsh' | Out-Null
+    if ($LASTEXITCODE -ne 0) { throw "npm:@4fu/pi-pwsh 安装失败 (exit code $LASTEXITCODE)" }
+    Write-Host "  + npm:@4fu/pi-pwsh (win)"
   }
 }
 
@@ -152,10 +179,13 @@ function Ensure-Vendor {
             }
           }
           Push-Location $d.FullName
-          npm install | Out-Null
-          node build.mjs | Out-Null
+          & npm ci | Out-Null
+          if ($LASTEXITCODE -ne 0) { throw "$($d.Name) npm ci 失败 (exit code $LASTEXITCODE)" }
+          & node build.mjs | Out-Null
+          if ($LASTEXITCODE -ne 0) { throw "$($d.Name) 构建失败 (exit code $LASTEXITCODE)" }
           Pop-Location
-          pi install $d.FullName | Out-Null
+          & pi install $d.FullName | Out-Null
+          if ($LASTEXITCODE -ne 0) { throw "$($d.Name) 安装失败 (exit code $LASTEXITCODE)" }
           Write-Host "  + $($d.Name)"
         } catch {
           Pop-Location -ErrorAction SilentlyContinue
@@ -223,7 +253,8 @@ function Manage-Extensions {
       $enabled[$extPkgs[[int]$sel]] = -not $enabled[$extPkgs[[int]$sel]]
     } elseif ($sel -eq "$($extPkgs.Count)") {
       foreach ($e in $extPkgs) {
-        if ($enabled[$e]) { try { pi install "npm:$e" | Out-Null; Say "安装 $e" } catch { Warn "安装失败 $e" } }
+        $spec = if ($e -eq 'pi-web-access') { 'npm:pi-web-access@0.23.0' } else { "npm:$e" }
+        if ($enabled[$e]) { try { pi install $spec | Out-Null; Say "安装 $spec" } catch { Warn "安装失败 $spec" } }
         else { try { pi remove "npm:$e" | Out-Null; Say "移除 $e" } catch { Warn "移除失败 $e" } }
       }
       return

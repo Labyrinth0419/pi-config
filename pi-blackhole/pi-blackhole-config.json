@@ -1,0 +1,29 @@
+{
+  "debug": false,
+  "sessionFallback": true,
+  "compaction": "auto",
+  "compactionEngine": "blackhole",
+  "skipForProviders": [],
+  "tailBehavior": "minimal",
+  "midRunCompaction": "off",
+  "model": {
+    "provider": "xiaomi",
+    "id": "mimo-v2.5",
+    "thinking": "low"
+  },
+  "observeAfterTokens": 15000,
+  "reflectAfterTokens": 25000,
+  "compactAfterTokens": 81000,
+  "observationsPoolMaxTokens": 20000,
+  "fullFoldAlways": true,
+  "observationsPoolTargetTokens": 10000,
+  "reflectorInputMaxTokens": 80000,
+  "dropperInputMaxTokens": 80000,
+  "dropperPressureThreshold": 0.7,
+  "dropperPoolFullnessThreshold": 0.1,
+  "observerChunkMaxTokens": 40000,
+  "observerPreambleMaxTokens": 0,
+  "agentMaxTurns": 16,
+  "memory": true,
+  "debugLog": false
+}

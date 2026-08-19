@@ -38,10 +38,11 @@ cd pi-config
 
 脚本会:
 1. 检测机器 → 应用对应 `machines/<name>/` 覆盖层
-2. 把核心配置 + 覆盖层同步到 `~/.pi/agent/`
+2. 把核心配置 + 覆盖层同步到 `~/.pi/agent/`，并同步 `web-search.json` 与 `pi-blackhole/pi-blackhole-config.json`
 3. 处理 `auth.json`:已有密钥保留;本机有 `~/.claude`/`~/.codex` 则自动提取;都没有则用模板
-4. `pi install` 装齐核心扩展(subagents / mcp-adapter / web-access / blackhole / background-tasks)
-5. 构建并安装 `vendor/` 里的扩展(plannotator:源码入库,`npm install` + `node build.mjs` 后 `pi install`)
+4. `pi install` 装齐核心扩展(subagents / mcp-adapter / `pi-web-access@0.23.0` / blackhole / background-tasks)
+5. 校验并应用 `vendor/pi-web-access-patch.mjs`;补丁失败时终止同步
+6. 构建并安装 `vendor/` 里的扩展(plannotator:源码入库,`npm ci` + `node build.mjs` 后 `pi install`)
 
 ## 目录
 
@@ -49,7 +50,9 @@ cd pi-config
 |---|---|
 | `AGENTS.md` | 全局行为规范 + 自动子代理规则(三端通用) |
 | `settings.json` | 默认 provider/model/思考档位(Ctrl+P 模型列表) |
-| `models.json` | deepseek + lucen 双 provider 定义 |
+| `models.json` | deepseek + lucen + xiaomi + labyrinth provider 定义(密钥只从环境变量或 `/login` 获取) |
+| `web-search.json` | web_search 自动摘要、摘要模型与摘要推理级别 |
+| `pi-blackhole/pi-blackhole-config.json` | blackhole 压缩/记忆 worker 基础模型 |
 | `keybindings.json` | 快捷键(ctrl+p 等已避免与模型切换冲突) |
 | `extensions/` | 本地扩展:slow-mode / notify / clipboard / rewind / branch-sessions / stash / questionnaire / environment-context(精选自 comonad/pi-config,MIT) |
 | `skills/` | code-review / research / diagnosing-bugs / prototype(精选自 mattpocock/skills,经 comonad vendored,MIT) |
@@ -63,11 +66,13 @@ cd pi-config
 ## 密钥
 
 - `auth.json` **已 gitignore**,由 setup 脚本自动生成/保留,绝不上库
-- 换机器时 setup 会自动从 `~/.claude`/`~/.codex` 提取;没有就填 `auth.json` 或 `pi /login`
+- `models.json` 中的 labyrinth provider 使用 `$LABYRINTH_API_KEY`;不要把真实 key 写进仓库
+- 换机器时 setup 会自动从 `~/.claude`/`~/.codex` 提取;没有就填 `auth.json`、设置 `LABYRINTH_API_KEY`，或运行 `pi /login`
+- `web-search.json` 的摘要模型需要在 `settings.json` 的 `enabledModels` 中启用；当前默认是 `labyrinth/gpt-5.6-luna` + `low`
 
 ## 日常
 
-- `pi` — 默认 lucen gpt-5.6-sol
+- `pi` — 默认 labyrinth gpt-5.6-luna，主会话 thinking 为 `max`；web_search 摘要独立使用 `low`
 - `Shift+Tab` 循环思考档位,`/thinking <level>`,`Ctrl+P` 切模型
 - 子代理:`Use reviewer to review this diff` / `Ask oracle ...`(规则见 `AGENTS.md`)
 
@@ -81,6 +86,8 @@ cd pi-config
 ## 注意
 
 - 修改仓库后重新跑一遍 setup(交互式菜单或 `--sync`;Windows 是复制,记得重跑)
+- `pi-web-access` 默认使用 `auto-summary`，不会为模型调用打开 curator 浏览器；手动 `/websearch` 仍是交互式 curator
+- setup 会在安装 `pi-web-access@0.23.0` 后运行 `vendor/pi-web-access-patch.mjs`，使 `summaryThinkingLevel` 能传递为 provider 的 reasoning effort；版本或源码哈希不匹配时补丁会拒绝应用
 - `pi-web-access` 在无头服务器上需要 ffmpeg/yt-dlp,按需安装
 - `extensions/` 里的本地扩展来自 comonad/pi-config(MIT),改动前保留出处声明
 - **Windows shell**:`machines/win-personal/settings.json` 指了 `shellPath`(Git Bash),setup 自动装 `@4fu/pi-pwsh`(用 PowerShell 7 替换 bash 工具;真 bash 用 `bash -c` 在 pwsh 里跑)

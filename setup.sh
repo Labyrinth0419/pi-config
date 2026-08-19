@@ -9,6 +9,9 @@ set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PI_DIR="${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}"
+WEB_CONFIG_DIR="${PI_CODING_AGENT_DIR:+$PI_DIR}"
+WEB_CONFIG_DIR="${WEB_CONFIG_DIR:-${XDG_CONFIG_HOME:+$XDG_CONFIG_HOME/pi}}"
+WEB_CONFIG_DIR="${WEB_CONFIG_DIR:-$HOME/.pi}"
 CORE_FILES=(AGENTS.md models.json keybindings.json)
 CORE_DIRS=(extensions skills prompts)
 EXT_PKGS=(pi-subagents pi-mcp-adapter pi-web-access pi-blackhole pi-background-tasks pi-hashline-edit)
@@ -42,6 +45,12 @@ MACHINE="$(detect_machine)"
 sync_core() {
   mkdir -p "$PI_DIR"
   for f in "${CORE_FILES[@]}"; do cp -f "$REPO/$f" "$PI_DIR/$f"; echo "  + $f"; done
+  mkdir -p "$WEB_CONFIG_DIR"
+  cp -f "$REPO/web-search.json" "$WEB_CONFIG_DIR/web-search.json"
+  echo "  + web-search.json"
+  mkdir -p "$PI_DIR/pi-blackhole"
+  cp -f "$REPO/pi-blackhole/pi-blackhole-config.json" "$PI_DIR/pi-blackhole/pi-blackhole-config.json"
+  echo "  + pi-blackhole/pi-blackhole-config.json"
   for d in "${CORE_DIRS[@]}"; do
     mkdir -p "$PI_DIR/$d"
     cp -rf "$REPO/$d/." "$PI_DIR/$d/"
@@ -81,7 +90,18 @@ apply_overlay() {
 }
 
 # --- auth.json ---------------------------------------------------------------
-has_keys() { [ -s "$PI_DIR/auth.json" ] && ! grep -q '""' "$PI_DIR/auth.json"; }
+has_keys() {
+  [ -s "$PI_DIR/auth.json" ] || return 1
+  if command -v node >/dev/null 2>&1; then
+    PI_DIR="$PI_DIR" node -e '
+      const fs=require("fs"), path=require("path");
+      const a=JSON.parse(fs.readFileSync(path.join(process.env.PI_DIR,"auth.json"),"utf8"));
+      process.exit(Object.values(a).some(v => v && typeof v.key === "string" && v.key.length > 0) ? 0 : 1);
+    ' >/dev/null 2>&1
+  else
+    grep -Eq '"key"[[:space:]]*:[[:space:]]*"[^"]+"' "$PI_DIR/auth.json"
+  fi
+}
 
 auth_status() {
   if ! [ -s "$PI_DIR/auth.json" ]; then echo "  (无 auth.json)"; return; fi
@@ -132,8 +152,19 @@ ensure_extensions() {
   if ! command -v pi >/dev/null 2>&1; then warn "pi 未安装 — 先装 pi 再重跑 setup"; return; fi
   say "确保核心扩展"
   for p in "${EXT_PKGS[@]}"; do
-    pi install "npm:$p" >/dev/null 2>&1 && echo "  + npm:$p" || warn "npm:$p 安装失败"
+    local spec="npm:$p"
+    [ "$p" = "pi-web-access" ] && spec="npm:pi-web-access@0.23.0"
+    pi install "$spec" >/dev/null 2>&1 && echo "  + $spec" || warn "$spec 安装失败"
   done
+  local web_access_dir="$PI_DIR/npm/node_modules/pi-web-access"
+  local patch_script="$REPO/vendor/pi-web-access-patch.mjs"
+  if [ ! -d "$web_access_dir" ] || [ ! -f "$patch_script" ] || ! command -v node >/dev/null 2>&1; then
+    warn "pi-web-access patch prerequisites missing"
+    return 1
+  fi
+  if [ -d "$web_access_dir" ] && [ -f "$patch_script" ] && command -v node >/dev/null 2>&1; then
+    node "$patch_script" "$web_access_dir" && echo "  + pi-web-access summary thinking patch" || { warn "pi-web-access 补丁未应用"; return 1; }
+  fi
   # Windows 专属:PowerShell 适配器(替换 bash 工具为 pwsh)
   if [ "$MACHINE" = "win-personal" ]; then
     pi install "npm:@4fu/pi-pwsh" >/dev/null 2>&1 && echo "  + npm:@4fu/pi-pwsh (win)" || warn "npm:@4fu/pi-pwsh 安装失败"
@@ -157,11 +188,12 @@ ensure_vendor() {
           fi
         done < "$v/download-assets.txt"
       fi
-      if (cd "$v" && npm install >/dev/null 2>&1 && node build.mjs >/dev/null 2>&1); then
+      if (cd "$v" && npm ci >/dev/null 2>&1 && node build.mjs >/dev/null 2>&1); then
         echo "  + 构建 $name"
-        pi install "$v" >/dev/null 2>&1 && echo "  + 安装 $name" || warn "$name 安装失败"
+        pi install "$v" >/dev/null 2>&1 && echo "  + 安装 $name" || return 1
       else
         warn "$name 构建失败"
+        return 1
       fi
     done
   fi
@@ -225,7 +257,9 @@ manage_extensions() {
     elif [ "$sel" = "${#EXT_PKGS[@]}" ]; then
       for i in "${!EXT_PKGS[@]}"; do
         if [ "${enabled[$i]:-0}" = 1 ]; then
-          pi install "npm:${EXT_PKGS[$i]}" >/dev/null 2>&1 && say "安装 ${EXT_PKGS[$i]}" || warn "安装失败 ${EXT_PKGS[$i]}"
+          spec="npm:${EXT_PKGS[$i]}"
+          [ "${EXT_PKGS[$i]}" = "pi-web-access" ] && spec="npm:pi-web-access@0.23.0"
+          pi install "$spec" >/dev/null 2>&1 && say "安装 $spec" || warn "安装失败 $spec"
         else
           pi remove "npm:${EXT_PKGS[$i]}" >/dev/null 2>&1 && say "移除 ${EXT_PKGS[$i]}" || warn "移除失败 ${EXT_PKGS[$i]}"
         fi
