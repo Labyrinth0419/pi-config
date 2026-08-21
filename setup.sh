@@ -15,6 +15,7 @@ WEB_CONFIG_DIR="${WEB_CONFIG_DIR:-$HOME/.pi}"
 CORE_FILES=(AGENTS.md models.json keybindings.json)
 CORE_DIRS=(extensions skills prompts)
 EXT_PKGS=(pi-subagents pi-mcp-adapter pi-web-access pi-blackhole pi-background-tasks pi-hashline-edit)
+MANAGED_EXT_SPECS=(npm:pi-subagents npm:pi-mcp-adapter npm:pi-web-access@0.23.0 npm:pi-blackhole npm:pi-background-tasks npm:pi-hashline-edit git:github.com/T50-Systems/pi-thread-goal npm:pi-btw)
 
 # --- 颜色(非 tty 自动禁用) ------------------------------------------------
 if [ -t 1 ]; then
@@ -154,7 +155,7 @@ ensure_extensions() {
   for p in "${EXT_PKGS[@]}"; do
     local spec="npm:$p"
     [ "$p" = "pi-web-access" ] && spec="npm:pi-web-access@0.23.0"
-    pi install "$spec" >/dev/null 2>&1 && echo "  + $spec" || warn "$spec 安装失败"
+    pi install "$spec" >/dev/null 2>&1 && echo "  + $spec" || { warn "$spec 安装失败"; return 1; }
   done
   local web_access_dir="$PI_DIR/npm/node_modules/pi-web-access"
   local patch_script="$REPO/vendor/pi-web-access-patch.mjs"
@@ -165,10 +166,14 @@ ensure_extensions() {
   if [ -d "$web_access_dir" ] && [ -f "$patch_script" ] && command -v node >/dev/null 2>&1; then
     node "$patch_script" "$web_access_dir" && echo "  + pi-web-access summary thinking patch" || { warn "pi-web-access 补丁未应用"; return 1; }
   fi
+  pi install git:github.com/T50-Systems/pi-thread-goal >/dev/null 2>&1 && echo "  + git:github.com/T50-Systems/pi-thread-goal" || { warn "pi-thread-goal 安装失败"; return 1; }
+  pi install npm:pi-btw >/dev/null 2>&1 && echo "  + npm:pi-btw" || { warn "npm:pi-btw 安装失败"; return 1; }
   # Windows 专属:PowerShell 适配器(替换 bash 工具为 pwsh)
   if [ "$MACHINE" = "win-personal" ]; then
-    pi install "npm:@4fu/pi-pwsh" >/dev/null 2>&1 && echo "  + npm:@4fu/pi-pwsh (win)" || warn "npm:@4fu/pi-pwsh 安装失败"
+    pi install "npm:@4fu/pi-pwsh" >/dev/null 2>&1 && echo "  + npm:@4fu/pi-pwsh (win)" || { warn "npm:@4fu/pi-pwsh 安装失败"; return 1; }
   fi
+  local task_routing_patch="$REPO/vendor/pi-task-routing-patch.mjs"
+  node "$task_routing_patch" "$PI_DIR" && echo "  + task ID routing patch" || { warn "后台任务 ID 路由补丁未应用"; return 1; }
 }
 
 # --- vendored 扩展(源码入库,构建产物不入库) ---------------------------
@@ -241,27 +246,26 @@ choose_machine() {
 
 manage_extensions() {
   local enabled=()
-  for i in "${!EXT_PKGS[@]}"; do enabled[$i]=1; done
+  for i in "${!MANAGED_EXT_SPECS[@]}"; do enabled[$i]=1; done
   while true; do
     hr
-    echo "  核心扩展(输编号切换开关;按$(( ${#EXT_PKGS[@]} ))应用):"
-    for i in "${!EXT_PKGS[@]}"; do
-      printf "    [%s] %d) %s\n" "${enabled[$i]:-0}" "$i" "${EXT_PKGS[$i]}"
+    echo "  核心扩展(输编号切换开关;按$(( ${#MANAGED_EXT_SPECS[@]} ))应用):"
+    for i in "${!MANAGED_EXT_SPECS[@]}"; do
+      printf "    [%s] %d) %s\n" "${enabled[$i]:-0}" "$i" "${MANAGED_EXT_SPECS[$i]}"
     done
-    printf "    [ ] %d) 全部应用并返回\n" "${#EXT_PKGS[@]}"
+    printf "    [ ] %d) 全部应用并返回\n" "${#MANAGED_EXT_SPECS[@]}"
     echo "    [q] 返回"
     read -rp "  编号 > " sel
     [ "$sel" = q ] && return
-    if [[ "$sel" =~ ^[0-9]+$ ]] && [ "$sel" -lt "${#EXT_PKGS[@]}" ]; then
+    if [[ "$sel" =~ ^[0-9]+$ ]] && [ "$sel" -lt "${#MANAGED_EXT_SPECS[@]}" ]; then
       enabled[$sel]=$(( 1 - ${enabled[$sel]:-0} ))
-    elif [ "$sel" = "${#EXT_PKGS[@]}" ]; then
-      for i in "${!EXT_PKGS[@]}"; do
+    elif [ "$sel" = "${#MANAGED_EXT_SPECS[@]}" ]; then
+      for i in "${!MANAGED_EXT_SPECS[@]}"; do
+        spec="${MANAGED_EXT_SPECS[$i]}"
         if [ "${enabled[$i]:-0}" = 1 ]; then
-          spec="npm:${EXT_PKGS[$i]}"
-          [ "${EXT_PKGS[$i]}" = "pi-web-access" ] && spec="npm:pi-web-access@0.23.0"
           pi install "$spec" >/dev/null 2>&1 && say "安装 $spec" || warn "安装失败 $spec"
         else
-          pi remove "npm:${EXT_PKGS[$i]}" >/dev/null 2>&1 && say "移除 ${EXT_PKGS[$i]}" || warn "移除失败 ${EXT_PKGS[$i]}"
+          pi remove "$spec" >/dev/null 2>&1 && say "移除 $spec" || warn "移除失败 $spec"
         fi
       done
       return

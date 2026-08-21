@@ -22,6 +22,7 @@ $webConfigDir = if ($env:PI_CODING_AGENT_DIR) {
 $coreFiles = @('AGENTS.md', 'models.json', 'keybindings.json')
 $coreDirs = @('extensions', 'skills', 'prompts')
 $extPkgs = @('pi-subagents', 'pi-mcp-adapter', 'pi-web-access', 'pi-blackhole', 'pi-background-tasks', 'pi-hashline-edit')
+$managedExtSpecs = @('npm:pi-subagents', 'npm:pi-mcp-adapter', 'npm:pi-web-access@0.23.0', 'npm:pi-blackhole', 'npm:pi-background-tasks', 'npm:pi-hashline-edit', 'git:github.com/T50-Systems/pi-thread-goal', 'npm:pi-btw')
 
 function Say([string]$m)  { Write-Host "==> $m" -ForegroundColor Green }
 function Warn([string]$m) { Write-Host "!! $m" -ForegroundColor Yellow }
@@ -147,12 +148,22 @@ function Ensure-Extensions {
   & node $patchScript $webAccessDir
   if ($LASTEXITCODE -ne 0) { throw "pi-web-access 补丁未应用 (exit code $LASTEXITCODE)" }
   Write-Host "  + pi-web-access summary thinking patch"
+  & pi install 'git:github.com/T50-Systems/pi-thread-goal' | Out-Null
+  if ($LASTEXITCODE -ne 0) { throw "pi-thread-goal 安装失败 (exit code $LASTEXITCODE)" }
+  Write-Host "  + git:github.com/T50-Systems/pi-thread-goal"
+  & pi install 'npm:pi-btw' | Out-Null
+  if ($LASTEXITCODE -ne 0) { throw "npm:pi-btw 安装失败 (exit code $LASTEXITCODE)" }
+  Write-Host "  + npm:pi-btw"
   # Windows 专属:PowerShell 适配器(替换 bash 工具为 pwsh)
   if ($script:M -eq 'win-personal') {
-    & pi install 'npm:@4fu/pi-pwsh' | Out-Null
+      & pi install 'npm:@4fu/pi-pwsh' | Out-Null
     if ($LASTEXITCODE -ne 0) { throw "npm:@4fu/pi-pwsh 安装失败 (exit code $LASTEXITCODE)" }
     Write-Host "  + npm:@4fu/pi-pwsh (win)"
   }
+  $taskRoutingPatch = Join-Path $repo 'vendor\pi-task-routing-patch.mjs'
+  & node $taskRoutingPatch $piDir
+  if ($LASTEXITCODE -ne 0) { throw "后台任务 ID 路由补丁未应用 (exit code $LASTEXITCODE)" }
+  Write-Host "  + task ID routing patch"
 }
 
 # --- vendored 扩展(源码入库,构建产物不入库) ---
@@ -237,25 +248,25 @@ function Choose-Machine {
 }
 
 function Manage-Extensions {
-  $enabled = @{}; foreach ($e in $extPkgs) { $enabled[$e] = $true }
+  $enabled = @{}; foreach ($e in $managedExtSpecs) { $enabled[$e] = $true }
   while ($true) {
     Hr
-    Write-Host "  核心扩展(输编号切换开关;按$($extPkgs.Count)应用):"
-    for ($i = 0; $i -lt $extPkgs.Count; $i++) {
-      $mark = if ($enabled[$extPkgs[$i]]) { 'x' } else { ' ' }
-      Write-Host "    [$mark] $i) $($extPkgs[$i])"
+    Write-Host "  核心扩展(输编号切换开关;按$($managedExtSpecs.Count)应用):"
+    for ($i = 0; $i -lt $managedExtSpecs.Count; $i++) {
+      $mark = if ($enabled[$managedExtSpecs[$i]]) { 'x' } else { ' ' }
+      Write-Host "    [$mark] $i) $($managedExtSpecs[$i])"
     }
-    Write-Host "    [ ] $($extPkgs.Count) 全部应用并返回"
+    Write-Host "    [ ] $($managedExtSpecs.Count) 全部应用并返回"
     Write-Host "    [q] 返回"
     $sel = Read-Host "  编号"
     if ($sel -eq 'q') { return }
-    if ($sel -match '^\d+$' -and [int]$sel -lt $extPkgs.Count) {
-      $enabled[$extPkgs[[int]$sel]] = -not $enabled[$extPkgs[[int]$sel]]
-    } elseif ($sel -eq "$($extPkgs.Count)") {
-      foreach ($e in $extPkgs) {
-        $spec = if ($e -eq 'pi-web-access') { 'npm:pi-web-access@0.23.0' } else { "npm:$e" }
-        if ($enabled[$e]) { try { pi install $spec | Out-Null; Say "安装 $spec" } catch { Warn "安装失败 $spec" } }
-        else { try { pi remove "npm:$e" | Out-Null; Say "移除 $e" } catch { Warn "移除失败 $e" } }
+    if ($sel -match '^\d+$' -and [int]$sel -lt $managedExtSpecs.Count) {
+      $enabled[$managedExtSpecs[[int]$sel]] = -not $enabled[$managedExtSpecs[[int]$sel]]
+    } elseif ($sel -eq "$($managedExtSpecs.Count)") {
+      foreach ($spec in $managedExtSpecs) {
+        $removeSpec = if ($spec -like 'npm:*@*') { $spec.Substring(0, $spec.LastIndexOf('@')) } else { $spec }
+        if ($enabled[$spec]) { try { pi install $spec | Out-Null; Say "安装 $spec" } catch { Warn "安装失败 $spec" } }
+        else { try { pi remove $removeSpec | Out-Null; Say "移除 $spec" } catch { Warn "移除失败 $spec" } }
       }
       return
     }

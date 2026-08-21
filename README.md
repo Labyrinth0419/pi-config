@@ -40,8 +40,8 @@ cd pi-config
 1. 检测机器 → 应用对应 `machines/<name>/` 覆盖层
 2. 把核心配置 + 覆盖层同步到 `~/.pi/agent/`，并同步 `web-search.json` 与 `pi-blackhole/pi-blackhole-config.json`
 3. 处理 `auth.json`:已有密钥保留;本机有 `~/.claude`/`~/.codex` 则自动提取;都没有则用模板
-4. `pi install` 装齐核心扩展(subagents / mcp-adapter / `pi-web-access@0.23.0` / blackhole / background-tasks)
-5. 校验并应用 `vendor/pi-web-access-patch.mjs`;补丁失败时终止同步
+4. `pi install` 装齐核心扩展(subagents / mcp-adapter / `pi-web-access@0.23.0` / blackhole / background-tasks / `pi-thread-goal` / `pi-btw`)
+5. 校验并应用 `vendor/pi-web-access-patch.mjs` 与 `vendor/pi-task-routing-patch.mjs`;补丁失败时终止同步
 6. 构建并安装 `vendor/` 里的扩展(plannotator:源码入库,`npm ci` + `node build.mjs` 后 `pi install`)
 
 ## 目录
@@ -58,6 +58,7 @@ cd pi-config
 | `skills/` | code-review / research / diagnosing-bugs / prototype(精选自 mattpocock/skills,经 comonad vendored,MIT) |
 | `prompts/` | 交接模板(handoff, pickup) |
 | `vendor/plannotator/` | 计划模式扩展(源码入库,setup 自动构建+安装;构建产物 gitignore) |
+| `pi-thread-goal` / `pi-btw` | 社区扩展:持久化 `/goal` 与并行 `/btw` side session,由 setup 自动安装 |
 | `machines/win-personal/` | Windows:drawio MCP(引用 `~/.codex` 本地路径) |
 | `machines/linux-personal/` | 直接用核心配置 |
 | `machines/linux-headless/` | 无头服务器:默认 deepseek、thinking high |
@@ -89,9 +90,11 @@ cd pi-config
 - `pi-web-access` 默认使用 `auto-summary`，不会为模型调用打开 curator 浏览器；手动 `/websearch` 仍是交互式 curator
 - setup 会在安装 `pi-web-access@0.23.0` 后运行 `vendor/pi-web-access-patch.mjs`，使 `summaryThinkingLevel` 能传递为 provider 的 reasoning effort；版本或源码哈希不匹配时补丁会拒绝应用
 - `pi-web-access` 在无头服务器上需要 ffmpeg/yt-dlp,按需安装
+- **后台任务 ID 路由**:`ps_XXXXXXXX` 属于 `@4fu/pi-pwsh`,只能使用 `pwsh taskId`;`bg_logs` 对误传的 `ps_` ID 会提示正确工具。`bg_run` 产生的任务才使用 `bg_status` / `bg_logs` / `bg_kill`
 - `extensions/` 里的本地扩展来自 comonad/pi-config(MIT),改动前保留出处声明
 - **Windows shell**:`machines/win-personal/settings.json` 指了 `shellPath`(Git Bash),setup 自动装 `@4fu/pi-pwsh`(用 PowerShell 7 替换 bash 工具;真 bash 用 `bash -c` 在 pwsh 里跑)
 - **Windows fusion/background-tasks**:scoop 装 pi 没有 `@earendil-works/pi-coding-agent` npm 包,`fusion` 起子进程会报环境问题;要用就 `cd ~/.pi/agent/npm && npm install --no-save @earendil-works/pi-coding-agent@0.84.2`(详见 win-personal/README)
+- **goal / btw**:`pi-thread-goal` 来自 GitHub `T50-Systems/pi-thread-goal`(当前未发布 npm 包),`pi-btw` 来自 npm;两者在 Pi 启动后可通过 `/reload` 生效
 - **hashline 编辑**:默认装 `pi-hashline-edit`(替换内置 read/edit,对弱空间推理模型收益大)。⚠️ **别装 `pi-hashline-edit-pro`**——它要 `node:sqlite`,而 scoop 的 pi 是 bun 编译二进制不含该模块,加载直接报错
 - `settings.json` 采用合并策略:仓库(含机器覆盖)的键覆盖手动改动,pi 管理的键(`packages`/`lastChangelogVersion`)保留
 - **加 skill**:在 `skills/` 下建目录放 `SKILL.md`(frontmatter 必须带 `name` 和 `description`)。**别在 `skills/` 目录放 README/说明文件**——pi 会把它当 skill 解析并报 "description is required"
