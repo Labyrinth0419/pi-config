@@ -5,9 +5,9 @@ import { join, resolve } from "node:path";
 
 const EXPECTED = {
   piPwsh: {
-    version: "0.8.9",
+    version: "0.8.10",
     relativePath: "npm/node_modules/@4fu/pi-pwsh/src/index.ts",
-    hash: "a089409d4b5f8a8f5ebfe0b25052d08ea83656d6221f2361d5cfdc1397abb30b",
+    hash: "624f541f537abc5c152d52f4d54cd191c486ad4c5a56bee9b964cafa33a67695",
   },
   backgroundTasks: {
     version: "2.4.2",
@@ -57,11 +57,11 @@ function patchPwsh(source) {
     "Task IDs are usable only in the parent session that launched them.\n\n[PI_TASK_ROUTING_PATCH] Task IDs beginning with ps_ belong to this PowerShell tool. Inspect or stop them only with pwsh using taskId; never pass ps_ IDs to bg_logs, bg_status, or bg_kill, which belong to pi-background-tasks.",
     "pwsh task description",
   );
-  source = replaceOnce(
-    source,
-    'export const PROMPT_GUIDELINE = "Use pwsh for shell tasks; every command starts a persistent background task. Write PowerShell syntax; prefer modern cross-platform tools such as rg, fd, etc. when available, otherwise use native PowerShell cmdlets with tightly bounded scope, and avoid Unix-only commands.";',
-    'export const PROMPT_GUIDELINE = "Use pwsh for shell tasks; every command starts a persistent background task. Write PowerShell syntax; prefer modern cross-platform tools such as rg, fd, etc. when available, otherwise use native PowerShell cmdlets with tightly bounded scope, and avoid Unix-only commands. Route every ps_XXXXXXXX task ID to pwsh with taskId; never send it to bg_logs, bg_status, or bg_kill.";',
-    "pwsh prompt guideline",
+  const guideline = source.split("\n").filter((line) => line.startsWith("export const PROMPT_GUIDELINE = "));
+  if (guideline.length !== 1) throw new Error(`pwsh prompt guideline: expected one line, found ${guideline.length}`);
+  source = source.replace(
+    guideline[0],
+    `${guideline[0].slice(0, -2)} Route every ps_XXXXXXXX task ID to pwsh with taskId; never send it to bg_logs, bg_status, or bg_kill.";`,
   );
   return source;
 }

@@ -22,7 +22,7 @@ $webConfigDir = if ($env:PI_CODING_AGENT_DIR) {
 $coreFiles = @('AGENTS.md', 'models.json', 'keybindings.json')
 $coreDirs = @('extensions', 'skills', 'prompts')
 $extPkgs = @('pi-subagents', 'pi-mcp-adapter', 'pi-web-access', 'pi-blackhole', 'pi-background-tasks', 'pi-hashline-edit')
-$managedExtSpecs = @('npm:pi-subagents', 'npm:pi-mcp-adapter', 'npm:pi-web-access@0.23.0', 'npm:pi-blackhole', 'npm:pi-background-tasks', 'npm:pi-hashline-edit', 'git:github.com/T50-Systems/pi-thread-goal', 'npm:pi-btw')
+$managedExtSpecs = @('npm:pi-subagents', 'npm:pi-mcp-adapter', 'npm:pi-web-access@0.23.0', 'npm:pi-blackhole', 'npm:pi-background-tasks', 'npm:pi-hashline-edit', 'git:github.com/T50-Systems/pi-thread-goal', 'npm:pi-btw', 'npm:@eko24ive/pi-ask@1.2.0')
 
 function Say([string]$m)  { Write-Host "==> $m" -ForegroundColor Green }
 function Warn([string]$m) { Write-Host "!! $m" -ForegroundColor Yellow }
@@ -154,11 +154,14 @@ function Ensure-Extensions {
   & pi install 'npm:pi-btw' | Out-Null
   if ($LASTEXITCODE -ne 0) { throw "npm:pi-btw 安装失败 (exit code $LASTEXITCODE)" }
   Write-Host "  + npm:pi-btw"
+  & pi install 'npm:@eko24ive/pi-ask@1.2.0' | Out-Null
+  if ($LASTEXITCODE -ne 0) { throw "npm:@eko24ive/pi-ask@1.2.0 安装失败 (exit code $LASTEXITCODE)" }
+  Write-Host "  + npm:@eko24ive/pi-ask@1.2.0"
   # Windows 专属:PowerShell 适配器(替换 bash 工具为 pwsh)
   if ($script:M -eq 'win-personal') {
-      & pi install 'npm:@4fu/pi-pwsh' | Out-Null
-    if ($LASTEXITCODE -ne 0) { throw "npm:@4fu/pi-pwsh 安装失败 (exit code $LASTEXITCODE)" }
-    Write-Host "  + npm:@4fu/pi-pwsh (win)"
+    & pi install 'npm:@4fu/pi-pwsh@0.8.10' | Out-Null
+    if ($LASTEXITCODE -ne 0) { throw "npm:@4fu/pi-pwsh@0.8.10 安装失败 (exit code $LASTEXITCODE)" }
+    Write-Host "  + npm:@4fu/pi-pwsh@0.8.10 (win)"
   }
   $taskRoutingPatch = Join-Path $repo 'vendor\pi-task-routing-patch.mjs'
   & node $taskRoutingPatch $piDir

@@ -15,7 +15,7 @@ WEB_CONFIG_DIR="${WEB_CONFIG_DIR:-$HOME/.pi}"
 CORE_FILES=(AGENTS.md models.json keybindings.json)
 CORE_DIRS=(extensions skills prompts)
 EXT_PKGS=(pi-subagents pi-mcp-adapter pi-web-access pi-blackhole pi-background-tasks pi-hashline-edit)
-MANAGED_EXT_SPECS=(npm:pi-subagents npm:pi-mcp-adapter npm:pi-web-access@0.23.0 npm:pi-blackhole npm:pi-background-tasks npm:pi-hashline-edit git:github.com/T50-Systems/pi-thread-goal npm:pi-btw)
+MANAGED_EXT_SPECS=(npm:pi-subagents npm:pi-mcp-adapter npm:pi-web-access@0.23.0 npm:pi-blackhole npm:pi-background-tasks npm:pi-hashline-edit git:github.com/T50-Systems/pi-thread-goal npm:pi-btw npm:@eko24ive/pi-ask@1.2.0)
 
 # --- 颜色(非 tty 自动禁用) ------------------------------------------------
 if [ -t 1 ]; then
@@ -168,9 +168,10 @@ ensure_extensions() {
   fi
   pi install git:github.com/T50-Systems/pi-thread-goal >/dev/null 2>&1 && echo "  + git:github.com/T50-Systems/pi-thread-goal" || { warn "pi-thread-goal 安装失败"; return 1; }
   pi install npm:pi-btw >/dev/null 2>&1 && echo "  + npm:pi-btw" || { warn "npm:pi-btw 安装失败"; return 1; }
+  pi install npm:@eko24ive/pi-ask@1.2.0 >/dev/null 2>&1 && echo "  + npm:@eko24ive/pi-ask@1.2.0" || { warn "npm:@eko24ive/pi-ask@1.2.0 安装失败"; return 1; }
   # Windows 专属:PowerShell 适配器(替换 bash 工具为 pwsh)
   if [ "$MACHINE" = "win-personal" ]; then
-    pi install "npm:@4fu/pi-pwsh" >/dev/null 2>&1 && echo "  + npm:@4fu/pi-pwsh (win)" || { warn "npm:@4fu/pi-pwsh 安装失败"; return 1; }
+    pi install "npm:@4fu/pi-pwsh@0.8.10" >/dev/null 2>&1 && echo "  + npm:@4fu/pi-pwsh@0.8.10 (win)" || { warn "npm:@4fu/pi-pwsh@0.8.10 安装失败"; return 1; }
   fi
   local task_routing_patch="$REPO/vendor/pi-task-routing-patch.mjs"
   node "$task_routing_patch" "$PI_DIR" && echo "  + task ID routing patch" || { warn "后台任务 ID 路由补丁未应用"; return 1; }
