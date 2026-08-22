@@ -49,7 +49,7 @@ cd pi-config
 | 路径 | 说明 |
 |---|---|
 | `AGENTS.md` | 全局行为规范 + 自动子代理规则(三端通用) |
-| `settings.json` | 默认 provider/model/思考档位(Ctrl+P 模型列表);reviewer 固定 `lucen/gpt-5.6-terra` |
+| `settings.json` | 默认 provider/model/思考档位(Ctrl+P 模型列表) |
 | `models.json` | deepseek + lucen + xiaomi + labyrinth provider 定义(密钥只从环境变量或 `/login` 获取) |
 | `web-search.json` | web_search 自动摘要、摘要模型与摘要推理级别 |
 | `pi-blackhole/pi-blackhole-config.json` | blackhole 压缩/记忆 worker 基础模型 |
@@ -71,13 +71,12 @@ cd pi-config
 - `models.json` 中的 labyrinth provider 使用 `$LABYRINTH_API_KEY`;不要把真实 key 写进仓库
 - 换机器时 setup 会自动从 `~/.claude`/`~/.codex` 提取;没有就填 `auth.json`、设置 `LABYRINTH_API_KEY`，或运行 `pi /login`
 - `web-search.json` 的摘要模型需要在 `settings.json` 的 `enabledModels` 中启用；当前默认是 `labyrinth/gpt-5.6-luna` + `low`
-- reviewer 子代理固定 `lucen/gpt-5.6-terra`，由 `subagents.agentOverrides.reviewer.model` 配置
 
 ## 日常
 
 - `pi` — 默认 labyrinth gpt-5.6-luna，主会话 thinking 为 `max`；web_search 摘要独立使用 `low`
 - `Shift+Tab` 循环思考档位,`/thinking <level>`,`Ctrl+P` 切模型
-- 子代理:`Use reviewer to review this diff` / `Ask oracle ...`(规则见 `AGENTS.md`);reviewer 固定 `lucen/gpt-5.6-terra`
+- 子代理:`Use reviewer to review this diff` / `Ask oracle ...`(规则见 `AGENTS.md`)
 
 ## 扩展模型↔档位绑定(可选)
 

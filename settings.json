@@ -16,13 +16,6 @@
     "labyrinth/gpt-5.6-luna",
     "labyrinth/gpt-5.6-terra"
   ],
-  "subagents": {
-    "agentOverrides": {
-      "reviewer": {
-        "model": "lucen/gpt-5.6-terra"
-      }
-    }
-  },
   "pi-blackhole": {
     "dropperFallbackModels": [
       {
