@@ -49,7 +49,7 @@
       ]
     },
     "lucen": {
-      "baseUrl": "https://xixiapi.io",
+      "baseUrl": "https://lucen.plus",
       "api": "openai-responses",
       "models": [
         {
