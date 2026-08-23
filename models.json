@@ -226,6 +226,38 @@
             "xhigh": "xhigh",
             "max": "max"
           }
+        },
+        {
+          "id": "gpt-5.6-sol",
+          "name": "GPT-5.6 Sol (Free)",
+          "reasoning": true,
+          "contextWindow": 200000,
+          "maxTokens": 32768,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": "xhigh",
+            "max": "max"
+          }
+        },
+        {
+          "id": "gpt-5.5",
+          "name": "GPT-5.5 (Free)",
+          "reasoning": true,
+          "contextWindow": 200000,
+          "maxTokens": 32768,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": "xhigh",
+            "max": null
+          }
         }
       ]
     }
