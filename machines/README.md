@@ -2,10 +2,11 @@
 
 `setup.sh` / `setup.ps1` 先把根目录的**核心配置**同步到 `~/.pi/agent/`,再应用当前机器的 overlay。
 
-**覆盖语义**(简单直接,不搞复杂合并):
-- `machines/<name>/settings.json` 存在 → **整体替换**核心 settings.json
+**覆盖语义**:
+- `settings.json` 按“已有运行时配置 → 根目录核心配置 → 机器 overlay”的顺序合并，后者覆盖同名键
+- `machines/<name>/settings.json` 只需声明该机器的差异配置
 - `machines/<name>/mcp.json` 存在 → 复制为 `~/.pi/agent/mcp.json`
-- `machines/<name>/extensions/` 存在 → 合并进 `~/.pi/agent/extensions/`
+- `machines/<name>/extensions/` 存在 → 复制并合并进 `~/.pi/agent/extensions/`
 
 **机器选择**:
 1. 显式指定:`PI_MACHINE=win-personal ./setup.sh` 或 `.\setup.ps1 -Machine win-personal`

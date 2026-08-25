@@ -1,7 +1,7 @@
 # linux-headless — 无头远程服务器
 
 覆盖内容:
-- `settings.json`:默认 **deepseek**(便宜),thinking 降到 **high**,只列 deepseek 模型
+- `settings.json`:默认 **deepseek**(便宜),thinking 降到 **high**；模型列表保留 deepseek，并额外启用 labyrinth 摘要模型
 
 注意:
 - 无 GUI,`notify`/主题类扩展无效但无害

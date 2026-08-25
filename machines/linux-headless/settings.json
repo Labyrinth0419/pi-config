@@ -4,6 +4,7 @@
   "defaultModel": "deepseek-v4-pro",
   "defaultThinkingLevel": "high",
   "enabledModels": [
-    "deepseek-v4-*"
+    "deepseek-v4-*",
+    "labyrinth/gpt-5.6-luna"
   ]
 }
