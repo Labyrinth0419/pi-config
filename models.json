@@ -190,6 +190,32 @@
         }
       ]
     },
+    "openrouter": {
+      "baseUrl": "https://openrouter.ai/api/v1",
+      "api": "openai-completions",
+      "apiKey": "$OPENROUTER_API_KEY",
+      "models": [
+        {
+          "id": "stealth/ox-alpha",
+          "name": "Ox Alpha",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 1048576,
+          "maxTokens": 131072,
+          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 },
+          "compat": { "thinkingFormat": "openrouter" },
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": null,
+            "high": "high",
+            "xhigh": null,
+            "max": "max"
+          }
+        }
+      ]
+    },
     "labyrinth": {
       "baseUrl": "https://api.labyrinth.moe/v1",
       "api": "openai-completions",

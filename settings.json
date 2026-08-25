@@ -1,8 +1,8 @@
 {
   "theme": "dark",
   "defaultProvider": "labyrinth",
-  "defaultModel": "gpt-5.6-luna",
-  "defaultThinkingLevel": "max",
+  "defaultModel": "gpt-5.5",
+  "defaultThinkingLevel": "xhigh",
   "enabledModels": [
     "xiaomi/mimo-v2.5",
     "xiaomi/mimo-v2.5-pro",
@@ -16,7 +16,8 @@
     "labyrinth/gpt-5.6-luna",
     "labyrinth/gpt-5.6-terra",
     "labyrinth/gpt-5.6-sol",
-    "labyrinth/gpt-5.5"
+    "labyrinth/gpt-5.5",
+    "openrouter/stealth/ox-alpha"
   ],
   "pi-blackhole": {
     "dropperFallbackModels": [

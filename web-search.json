@@ -1,5 +1,4 @@
 {
   "workflow": "auto-summary",
-  "summaryModel": "labyrinth/gpt-5.6-luna",
-  "summaryThinkingLevel": "low"
+  "summaryModel": "labyrinth/gpt-5.6-luna:low"
 }

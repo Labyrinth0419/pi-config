@@ -21,8 +21,8 @@ $webConfigDir = if ($env:PI_CODING_AGENT_DIR) {
 }
 $coreFiles = @('AGENTS.md', 'models.json', 'keybindings.json')
 $coreDirs = @('extensions', 'skills', 'prompts')
-$extPkgs = @('pi-subagents', 'pi-mcp-adapter', 'pi-web-access', 'pi-blackhole', 'pi-background-tasks', 'pi-hashline-edit')
-$managedExtSpecs = @('npm:pi-subagents', 'npm:pi-mcp-adapter', 'npm:pi-web-access@0.23.0', 'npm:pi-blackhole', 'npm:pi-background-tasks', 'npm:pi-hashline-edit', 'git:github.com/T50-Systems/pi-thread-goal', 'npm:pi-btw', 'npm:@eko24ive/pi-ask@1.2.0')
+$extPkgs = @('npm:pi-subagents', 'npm:pi-mcp-adapter', 'npm:pi-web-access@0.24.2', 'npm:pi-blackhole', 'npm:pi-background-tasks@2.4.2', 'npm:pi-hashline-edit@0.8.3', 'npm:pi-mem-cc@0.1.0', 'npm:pi-ssh-remote@0.1.11', 'npm:planning-with-files@3.10.2', 'npm:pi-todo-rail@0.2.3', 'git:github.com/T50-Systems/pi-thread-goal', 'npm:pi-btw', 'npm:@eko24ive/pi-ask@1.2.0')
+$managedExtSpecs = @('npm:pi-subagents', 'npm:pi-mcp-adapter', 'npm:pi-web-access@0.24.2', 'npm:pi-blackhole', 'npm:pi-background-tasks@2.4.2', 'npm:pi-hashline-edit@0.8.3', 'npm:pi-mem-cc@0.1.0', 'npm:pi-ssh-remote@0.1.11', 'npm:planning-with-files@3.10.2', 'npm:pi-todo-rail@0.2.3', 'git:github.com/T50-Systems/pi-thread-goal', 'npm:pi-btw', 'npm:@eko24ive/pi-ask@1.2.0')
 
 function Say([string]$m)  { Write-Host "==> $m" -ForegroundColor Green }
 function Warn([string]$m) { Write-Host "!! $m" -ForegroundColor Yellow }
@@ -135,28 +135,11 @@ function Ensure-Extensions {
   if (-not (Get-Command pi -ErrorAction SilentlyContinue)) { throw "pi 未安装 — 先装 pi 再重跑 setup" }
   Say "确保核心扩展"
   foreach ($p in $extPkgs) {
-    $spec = if ($p -eq 'pi-web-access') { 'npm:pi-web-access@0.23.0' } else { "npm:$p" }
+    $spec = $p
     & pi install $spec | Out-Null
     if ($LASTEXITCODE -ne 0) { throw "$spec 安装失败 (exit code $LASTEXITCODE)" }
     Write-Host "  + $spec"
   }
-  $webAccessDir = Join-Path $piDir 'npm\node_modules\pi-web-access'
-  $patchScript = Join-Path $repo 'vendor\pi-web-access-patch.mjs'
-  if (-not (Test-Path $webAccessDir) -or -not (Test-Path $patchScript) -or -not (Get-Command node -ErrorAction SilentlyContinue)) {
-    throw "pi-web-access 补丁前置条件缺失"
-  }
-  & node $patchScript $webAccessDir
-  if ($LASTEXITCODE -ne 0) { throw "pi-web-access 补丁未应用 (exit code $LASTEXITCODE)" }
-  Write-Host "  + pi-web-access summary thinking patch"
-  & pi install 'git:github.com/T50-Systems/pi-thread-goal' | Out-Null
-  if ($LASTEXITCODE -ne 0) { throw "pi-thread-goal 安装失败 (exit code $LASTEXITCODE)" }
-  Write-Host "  + git:github.com/T50-Systems/pi-thread-goal"
-  & pi install 'npm:pi-btw' | Out-Null
-  if ($LASTEXITCODE -ne 0) { throw "npm:pi-btw 安装失败 (exit code $LASTEXITCODE)" }
-  Write-Host "  + npm:pi-btw"
-  & pi install 'npm:@eko24ive/pi-ask@1.2.0' | Out-Null
-  if ($LASTEXITCODE -ne 0) { throw "npm:@eko24ive/pi-ask@1.2.0 安装失败 (exit code $LASTEXITCODE)" }
-  Write-Host "  + npm:@eko24ive/pi-ask@1.2.0"
   # Windows 专属:PowerShell 适配器(替换 bash 工具为 pwsh)
   if ($script:M -eq 'win-personal') {
     & pi install 'npm:@4fu/pi-pwsh@0.8.10' | Out-Null
@@ -178,6 +161,7 @@ function Ensure-Vendor {
     if ($dirs.Count -gt 0) {
       Say "构建并安装 vendored 扩展"
       foreach ($d in $dirs) {
+        if ($d.Name -eq 'plannotator') { continue }
         try {
           # 大体积 UI 资产不入库,按 download-assets.txt 从上游拉取
           $dlFile = Join-Path $d.FullName 'download-assets.txt'

@@ -14,8 +14,8 @@ WEB_CONFIG_DIR="${WEB_CONFIG_DIR:-${XDG_CONFIG_HOME:+$XDG_CONFIG_HOME/pi}}"
 WEB_CONFIG_DIR="${WEB_CONFIG_DIR:-$HOME/.pi}"
 CORE_FILES=(AGENTS.md models.json keybindings.json)
 CORE_DIRS=(extensions skills prompts)
-EXT_PKGS=(pi-subagents pi-mcp-adapter pi-web-access pi-blackhole pi-background-tasks pi-hashline-edit)
-MANAGED_EXT_SPECS=(npm:pi-subagents npm:pi-mcp-adapter npm:pi-web-access@0.23.0 npm:pi-blackhole npm:pi-background-tasks npm:pi-hashline-edit git:github.com/T50-Systems/pi-thread-goal npm:pi-btw npm:@eko24ive/pi-ask@1.2.0)
+EXT_PKGS=(npm:pi-subagents npm:pi-mcp-adapter npm:pi-web-access@0.24.2 npm:pi-blackhole npm:pi-background-tasks@2.4.2 npm:pi-hashline-edit@0.8.3 npm:pi-mem-cc@0.1.0 npm:pi-ssh-remote@0.1.11 npm:planning-with-files@3.10.2 npm:pi-todo-rail@0.2.3 git:github.com/T50-Systems/pi-thread-goal npm:pi-btw npm:@eko24ive/pi-ask@1.2.0)
+MANAGED_EXT_SPECS=(npm:pi-subagents npm:pi-mcp-adapter npm:pi-web-access@0.24.2 npm:pi-blackhole npm:pi-background-tasks@2.4.2 npm:pi-hashline-edit@0.8.3 npm:pi-mem-cc@0.1.0 npm:pi-ssh-remote@0.1.11 npm:planning-with-files@3.10.2 npm:pi-todo-rail@0.2.3 git:github.com/T50-Systems/pi-thread-goal npm:pi-btw npm:@eko24ive/pi-ask@1.2.0)
 
 # --- 颜色(非 tty 自动禁用) ------------------------------------------------
 if [ -t 1 ]; then
@@ -153,22 +153,9 @@ ensure_extensions() {
   if ! command -v pi >/dev/null 2>&1; then warn "pi 未安装 — 先装 pi 再重跑 setup"; return; fi
   say "确保核心扩展"
   for p in "${EXT_PKGS[@]}"; do
-    local spec="npm:$p"
-    [ "$p" = "pi-web-access" ] && spec="npm:pi-web-access@0.23.0"
+    local spec="$p"
     pi install "$spec" >/dev/null 2>&1 && echo "  + $spec" || { warn "$spec 安装失败"; return 1; }
   done
-  local web_access_dir="$PI_DIR/npm/node_modules/pi-web-access"
-  local patch_script="$REPO/vendor/pi-web-access-patch.mjs"
-  if [ ! -d "$web_access_dir" ] || [ ! -f "$patch_script" ] || ! command -v node >/dev/null 2>&1; then
-    warn "pi-web-access patch prerequisites missing"
-    return 1
-  fi
-  if [ -d "$web_access_dir" ] && [ -f "$patch_script" ] && command -v node >/dev/null 2>&1; then
-    node "$patch_script" "$web_access_dir" && echo "  + pi-web-access summary thinking patch" || { warn "pi-web-access 补丁未应用"; return 1; }
-  fi
-  pi install git:github.com/T50-Systems/pi-thread-goal >/dev/null 2>&1 && echo "  + git:github.com/T50-Systems/pi-thread-goal" || { warn "pi-thread-goal 安装失败"; return 1; }
-  pi install npm:pi-btw >/dev/null 2>&1 && echo "  + npm:pi-btw" || { warn "npm:pi-btw 安装失败"; return 1; }
-  pi install npm:@eko24ive/pi-ask@1.2.0 >/dev/null 2>&1 && echo "  + npm:@eko24ive/pi-ask@1.2.0" || { warn "npm:@eko24ive/pi-ask@1.2.0 安装失败"; return 1; }
   # Windows 专属:PowerShell 适配器(替换 bash 工具为 pwsh)
   if [ "$MACHINE" = "win-personal" ]; then
     pi install "npm:@4fu/pi-pwsh@0.8.10" >/dev/null 2>&1 && echo "  + npm:@4fu/pi-pwsh@0.8.10 (win)" || { warn "npm:@4fu/pi-pwsh@0.8.10 安装失败"; return 1; }
@@ -183,6 +170,7 @@ ensure_vendor() {
   if [ -d "$REPO/vendor" ] && compgen -G "$REPO/vendor/*/" >/dev/null 2>&1; then
     say "构建并安装 vendored 扩展"
     for v in "$REPO"/vendor/*/; do
+      [ "$(basename "$v")" = "plannotator" ] && continue
       local name
       name="$(basename "$v")"
       # 大体积 UI 资产不入库,按 download-assets.txt 从上游拉取

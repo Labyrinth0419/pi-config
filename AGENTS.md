@@ -5,6 +5,7 @@
 - 默认先讨论再动手:不要擅自实现/重构/改代码,除非被明确要求
 - 拿到问题先总结/分析风险,再等指示("implement this"、"fix this")
 - 讨论时聚焦方案本身,不要急着写码
+- Windows 下始终使用 `pwsh` 执行命令;不要使用 Bash、Git Bash 或其他 shell,即使当前配置的 `shellPath` 指向其他 shell
 
 ## Code & Documentation
 

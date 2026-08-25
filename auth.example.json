@@ -2,5 +2,6 @@
   "deepseek": { "type": "api_key", "key": "" },
   "lucen": { "type": "api_key", "key": "" },
   "xiaomi": { "type": "api_key", "key": "" },
-  "labyrinth": { "type": "api_key", "key": "" }
+  "labyrinth": { "type": "api_key", "key": "" },
+  "openrouter": { "type": "api_key", "key": "" }
 }

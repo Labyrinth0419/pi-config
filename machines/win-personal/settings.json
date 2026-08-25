@@ -1,3 +1,9 @@
 {
-  "shellPath": "E:\\Git\\usr\\bin\\bash.exe"
+  "shellPath": "E:\\Git\\usr\\bin\\bash.exe",
+  "defaultTools": [
+    "read",
+    "powershell",
+    "edit",
+    "write"
+  ]
 }

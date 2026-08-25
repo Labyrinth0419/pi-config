@@ -8,5 +8,5 @@ Windows 专属扩展(由 setup 自动装):`@4fu/pi-pwsh` —— 替换内置 bas
 
 **fusion / background-tasks 子进程(可选)**:scoop 装的 pi 是独立二进制,没有 npm 包 `@earendil-works/pi-coding-agent`,导致 fusion 在 Windows 起子进程报"环境问题"(`PiLaunchResolutionError`)。要用 fusion 时跑一次:
 ```powershell
-cd ~/.pi/agent/npm; npm install --no-save @earendil-works/pi-coding-agent@0.84.2
+cd ~/.pi/agent/npm; npm install --no-save @earendil-works/pi-coding-agent@0.84.3
 ```
