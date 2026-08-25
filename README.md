@@ -40,7 +40,7 @@ cd pi-config
 1. 检测机器 → 应用对应 `machines/<name>/` 覆盖层
 2. 把核心配置 + 覆盖层同步到 `~/.pi/agent/`，并同步 `web-search.json` 与 `pi-blackhole/pi-blackhole-config.json`
 3. 处理 `auth.json`:已有密钥保留;本机有 `~/.claude`/`~/.codex` 则自动提取;都没有则用模板
-4. `pi install` 装齐核心扩展(subagents / mcp-adapter / `pi-web-access@0.24.2` / blackhole / background-tasks / hashline-edit / pi-mem-cc / pi-ssh-remote / planning-with-files / pi-todo-rail / `pi-thread-goal` / `pi-btw` / `@eko24ive/pi-ask@1.2.0`)
+4. `pi install` 装齐核心扩展(subagents / mcp-adapter / `pi-web-access@0.24.2` / blackhole / background-tasks / hashline-edit / pi-mem-cc / pi-ssh-remote / planning-with-files / pi-todo-rail / `pi-thread-goal` / `pi-btw` / `@narumitw/pi-btw@0.55.1` / `@eko24ive/pi-ask@1.2.0`)
 5. 校验并应用 `vendor/pi-task-routing-patch.mjs`;补丁失败时终止同步
 6. 构建并安装 `vendor/` 中除 plannotator 外的扩展;plannotator 源码保留在库中但当前 setup 跳过安装
 
@@ -50,7 +50,7 @@ cd pi-config
 |---|---|
 | `AGENTS.md` | 全局行为规范 + 自动子代理规则(三端通用) |
 | `settings.json` | 默认 provider/model/思考档位(Ctrl+P 模型列表) |
-| `models.json` | deepseek + lucen + xiaomi + labyrinth + OpenRouter provider 定义(密钥只从环境变量或 `/login` 获取) |
+| `models.json` | deepseek + lucen + xiaomi + labyrinth + OpenRouter + ZAI + Google provider 定义(密钥只从环境变量或 `/login` 获取) |
 | `web-search.json` | web_search 自动摘要、摘要模型与摘要推理级别 |
 | `pi-blackhole/pi-blackhole-config.json` | blackhole 压缩/记忆 worker 基础模型 |
 | `keybindings.json` | 快捷键(ctrl+p 等已避免与模型切换冲突) |
@@ -58,7 +58,7 @@ cd pi-config
 | `skills/` | code-review / research / diagnosing-bugs / prototype(精选自 mattpocock/skills,经 comonad vendored,MIT) |
 | `prompts/` | 交接模板(handoff, pickup) |
 | `vendor/plannotator/` | 计划模式扩展源码(入库保存;当前 setup 跳过自动构建/安装) |
-| `pi-thread-goal` / `pi-btw` | 社区扩展:持久化 `/goal` 与并行 `/btw` side session,由 setup 自动安装 |
+| `pi-thread-goal` / `pi-btw` / `@narumitw/pi-btw` | 社区扩展:持久化 `/goal`、独立 `/btw` side session 与轻量 `/btw` side question,由 setup 自动安装 |
 | `pi-mem-cc` / `pi-ssh-remote` | 记忆与 SSH 远程扩展,由 setup 自动安装 |
 | `planning-with-files` / `pi-todo-rail` | 文件化规划与分支感知 Todo 扩展,由 setup 自动安装 |
 | `@eko24ive/pi-ask` | 社区问答扩展,替代本机自写的 `questionnaire.ts`,由 setup 自动安装 |
@@ -98,7 +98,7 @@ cd pi-config
 - `vendor/plannotator/` 当前仅作为源码存档;setup 不会自动重新安装它
 - **Windows shell**:`machines/win-personal/settings.json` 指了 `shellPath`(Git Bash),setup 自动装 `@4fu/pi-pwsh@0.8.10`(用 PowerShell 7 替换 bash 工具;真 bash 用 `bash -c` 在 pwsh 里跑)
 - **Windows fusion/background-tasks**:scoop 装 pi 没有 `@earendil-works/pi-coding-agent` npm 包,`fusion` 起子进程会报环境问题;要用就 `cd ~/.pi/agent/npm && npm install --no-save @earendil-works/pi-coding-agent@0.84.3`(详见 win-personal/README)
-- **goal / btw / ask / planning / todo**:`pi-thread-goal` 来自 GitHub(当前未发布 npm 包),`pi-btw`、`planning-with-files`、`pi-todo-rail` 来自 npm;`@eko24ive/pi-ask@1.2.0` 替代本机自写的 `questionnaire.ts`;扩展更新后可通过 `/reload` 生效
+- **goal / btw / ask / planning / todo**:`pi-thread-goal` 来自 GitHub(当前未发布 npm 包),`pi-btw`、`@narumitw/pi-btw@0.55.1`、`planning-with-files`、`pi-todo-rail` 来自 npm;`@eko24ive/pi-ask@1.2.0` 替代本机自写的 `questionnaire.ts`;两个 btw 扩展分别提供独立 side session 和轻量 side question,扩展更新后可通过 `/reload` 生效
 - **hashline 编辑**:默认装 `pi-hashline-edit`(替换内置 read/edit,对弱空间推理模型收益大)。⚠️ **别装 `pi-hashline-edit-pro`**——它要 `node:sqlite`,而 scoop 的 pi 是 bun 编译二进制不含该模块,加载直接报错
 - `settings.json` 采用合并策略:仓库(含机器覆盖)的键覆盖手动改动,pi 管理的键(`packages`/`lastChangelogVersion`)保留
 - **加 skill**:在 `skills/` 下建目录放 `SKILL.md`(frontmatter 必须带 `name` 和 `description`)。**别在 `skills/` 目录放 README/说明文件**——pi 会把它当 skill 解析并报 "description is required"

@@ -17,7 +17,9 @@
     "labyrinth/gpt-5.6-terra",
     "labyrinth/gpt-5.6-sol",
     "labyrinth/gpt-5.5",
-    "openrouter/stealth/ox-alpha"
+    "openrouter/stealth/ox-alpha",
+    "zai/glm-4.7-flash",
+    "google/gemini-3.1-flash-lite"
   ],
   "pi-blackhole": {
     "dropperFallbackModels": [

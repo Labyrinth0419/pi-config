@@ -21,8 +21,8 @@ $webConfigDir = if ($env:PI_CODING_AGENT_DIR) {
 }
 $coreFiles = @('AGENTS.md', 'models.json', 'keybindings.json')
 $coreDirs = @('extensions', 'skills', 'prompts')
-$extPkgs = @('npm:pi-subagents', 'npm:pi-mcp-adapter', 'npm:pi-web-access@0.24.2', 'npm:pi-blackhole', 'npm:pi-background-tasks@2.4.2', 'npm:pi-hashline-edit@0.8.3', 'npm:pi-mem-cc@0.1.0', 'npm:pi-ssh-remote@0.1.11', 'npm:planning-with-files@3.10.2', 'npm:pi-todo-rail@0.2.3', 'git:github.com/T50-Systems/pi-thread-goal', 'npm:pi-btw', 'npm:@eko24ive/pi-ask@1.2.0')
-$managedExtSpecs = @('npm:pi-subagents', 'npm:pi-mcp-adapter', 'npm:pi-web-access@0.24.2', 'npm:pi-blackhole', 'npm:pi-background-tasks@2.4.2', 'npm:pi-hashline-edit@0.8.3', 'npm:pi-mem-cc@0.1.0', 'npm:pi-ssh-remote@0.1.11', 'npm:planning-with-files@3.10.2', 'npm:pi-todo-rail@0.2.3', 'git:github.com/T50-Systems/pi-thread-goal', 'npm:pi-btw', 'npm:@eko24ive/pi-ask@1.2.0')
+$extPkgs = @('npm:pi-subagents', 'npm:pi-mcp-adapter', 'npm:pi-web-access@0.24.2', 'npm:pi-blackhole', 'npm:pi-background-tasks@2.4.2', 'npm:pi-hashline-edit@0.8.3', 'npm:pi-mem-cc@0.1.0', 'npm:pi-ssh-remote@0.1.11', 'npm:planning-with-files@3.10.2', 'npm:pi-todo-rail@0.2.3', 'git:github.com/T50-Systems/pi-thread-goal', 'npm:pi-btw', 'npm:@narumitw/pi-btw@0.55.1', 'npm:@eko24ive/pi-ask@1.2.0')
+$managedExtSpecs = @('npm:pi-subagents', 'npm:pi-mcp-adapter', 'npm:pi-web-access@0.24.2', 'npm:pi-blackhole', 'npm:pi-background-tasks@2.4.2', 'npm:pi-hashline-edit@0.8.3', 'npm:pi-mem-cc@0.1.0', 'npm:pi-ssh-remote@0.1.11', 'npm:planning-with-files@3.10.2', 'npm:pi-todo-rail@0.2.3', 'git:github.com/T50-Systems/pi-thread-goal', 'npm:pi-btw', 'npm:@narumitw/pi-btw@0.55.1', 'npm:@eko24ive/pi-ask@1.2.0')
 
 function Say([string]$m)  { Write-Host "==> $m" -ForegroundColor Green }
 function Warn([string]$m) { Write-Host "!! $m" -ForegroundColor Yellow }

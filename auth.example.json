@@ -3,5 +3,7 @@
   "lucen": { "type": "api_key", "key": "" },
   "xiaomi": { "type": "api_key", "key": "" },
   "labyrinth": { "type": "api_key", "key": "" },
-  "openrouter": { "type": "api_key", "key": "" }
+  "openrouter": { "type": "api_key", "key": "" },
+  "zai": { "type": "api_key", "key": "" },
+  "google": { "type": "api_key", "key": "" }
 }

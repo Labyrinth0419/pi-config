@@ -14,8 +14,8 @@ WEB_CONFIG_DIR="${WEB_CONFIG_DIR:-${XDG_CONFIG_HOME:+$XDG_CONFIG_HOME/pi}}"
 WEB_CONFIG_DIR="${WEB_CONFIG_DIR:-$HOME/.pi}"
 CORE_FILES=(AGENTS.md models.json keybindings.json)
 CORE_DIRS=(extensions skills prompts)
-EXT_PKGS=(npm:pi-subagents npm:pi-mcp-adapter npm:pi-web-access@0.24.2 npm:pi-blackhole npm:pi-background-tasks@2.4.2 npm:pi-hashline-edit@0.8.3 npm:pi-mem-cc@0.1.0 npm:pi-ssh-remote@0.1.11 npm:planning-with-files@3.10.2 npm:pi-todo-rail@0.2.3 git:github.com/T50-Systems/pi-thread-goal npm:pi-btw npm:@eko24ive/pi-ask@1.2.0)
-MANAGED_EXT_SPECS=(npm:pi-subagents npm:pi-mcp-adapter npm:pi-web-access@0.24.2 npm:pi-blackhole npm:pi-background-tasks@2.4.2 npm:pi-hashline-edit@0.8.3 npm:pi-mem-cc@0.1.0 npm:pi-ssh-remote@0.1.11 npm:planning-with-files@3.10.2 npm:pi-todo-rail@0.2.3 git:github.com/T50-Systems/pi-thread-goal npm:pi-btw npm:@eko24ive/pi-ask@1.2.0)
+EXT_PKGS=(npm:pi-subagents npm:pi-mcp-adapter npm:pi-web-access@0.24.2 npm:pi-blackhole npm:pi-background-tasks@2.4.2 npm:pi-hashline-edit@0.8.3 npm:pi-mem-cc@0.1.0 npm:pi-ssh-remote@0.1.11 npm:planning-with-files@3.10.2 npm:pi-todo-rail@0.2.3 git:github.com/T50-Systems/pi-thread-goal npm:pi-btw npm:@narumitw/pi-btw@0.55.1 npm:@eko24ive/pi-ask@1.2.0)
+MANAGED_EXT_SPECS=(npm:pi-subagents npm:pi-mcp-adapter npm:pi-web-access@0.24.2 npm:pi-blackhole npm:pi-background-tasks@2.4.2 npm:pi-hashline-edit@0.8.3 npm:pi-mem-cc@0.1.0 npm:pi-ssh-remote@0.1.11 npm:planning-with-files@3.10.2 npm:pi-todo-rail@0.2.3 git:github.com/T50-Systems/pi-thread-goal npm:pi-btw npm:@narumitw/pi-btw@0.55.1 npm:@eko24ive/pi-ask@1.2.0)
 
 # --- 颜色(非 tty 自动禁用) ------------------------------------------------
 if [ -t 1 ]; then
