@@ -8,7 +8,9 @@
           "id": "deepseek-v4-flash",
           "name": "DeepSeek V4 Flash",
           "reasoning": true,
-          "input": ["text"],
+          "input": [
+            "text"
+          ],
           "contextWindow": 1000000,
           "maxTokens": 384000,
           "compat": {
@@ -29,7 +31,9 @@
           "id": "deepseek-v4-pro",
           "name": "DeepSeek V4 Pro (1M ctx)",
           "reasoning": true,
-          "input": ["text"],
+          "input": [
+            "text"
+          ],
           "contextWindow": 1000000,
           "maxTokens": 384000,
           "compat": {
@@ -66,7 +70,11 @@
             "high": "high",
             "xhigh": "xhigh",
             "max": "max"
-          }
+          },
+          "input": [
+            "text",
+            "image"
+          ]
         },
         {
           "id": "gpt-5.6-terra",
@@ -82,7 +90,11 @@
             "high": "high",
             "xhigh": "xhigh",
             "max": "max"
-          }
+          },
+          "input": [
+            "text",
+            "image"
+          ]
         },
         {
           "id": "gpt-5.6-luna",
@@ -98,7 +110,11 @@
             "high": "high",
             "xhigh": "xhigh",
             "max": "max"
-          }
+          },
+          "input": [
+            "text",
+            "image"
+          ]
         },
         {
           "id": "gpt-5.5",
@@ -114,7 +130,11 @@
             "high": "high",
             "xhigh": "xhigh",
             "max": null
-          }
+          },
+          "input": [
+            "text",
+            "image"
+          ]
         }
       ]
     },
@@ -126,10 +146,18 @@
           "id": "mimo-v2.5",
           "name": "MiMo-V2.5",
           "reasoning": true,
-          "input": ["text", "image"],
+          "input": [
+            "text",
+            "image"
+          ],
           "contextWindow": 1048576,
           "maxTokens": 131072,
-          "cost": { "input": 0.14, "output": 0.28, "cacheRead": 0.0028, "cacheWrite": 0 },
+          "cost": {
+            "input": 0.14,
+            "output": 0.28,
+            "cacheRead": 0.0028,
+            "cacheWrite": 0
+          },
           "compat": {
             "requiresReasoningContentOnAssistantMessages": true,
             "thinkingFormat": "deepseek"
@@ -148,10 +176,17 @@
           "id": "mimo-v2.5-pro",
           "name": "MiMo-V2.5-Pro",
           "reasoning": true,
-          "input": ["text"],
+          "input": [
+            "text"
+          ],
           "contextWindow": 1048576,
           "maxTokens": 131072,
-          "cost": { "input": 0.435, "output": 0.87, "cacheRead": 0.0036, "cacheWrite": 0 },
+          "cost": {
+            "input": 0.435,
+            "output": 0.87,
+            "cacheRead": 0.0036,
+            "cacheWrite": 0
+          },
           "compat": {
             "requiresReasoningContentOnAssistantMessages": true,
             "thinkingFormat": "deepseek"
@@ -170,10 +205,17 @@
           "id": "mimo-v2.5-pro-ultraspeed",
           "name": "MiMo-V2.5-Pro-UltraSpeed",
           "reasoning": true,
-          "input": ["text"],
+          "input": [
+            "text"
+          ],
           "contextWindow": 1048576,
           "maxTokens": 131072,
-          "cost": { "input": 1.305, "output": 2.61, "cacheRead": 0.0108, "cacheWrite": 0 },
+          "cost": {
+            "input": 1.305,
+            "output": 2.61,
+            "cacheRead": 0.0108,
+            "cacheWrite": 0
+          },
           "compat": {
             "requiresReasoningContentOnAssistantMessages": true,
             "thinkingFormat": "deepseek"
@@ -190,6 +232,148 @@
         }
       ]
     },
+    "openrouter": {
+      "baseUrl": "https://openrouter.ai/api/v1",
+      "api": "openai-completions",
+      "apiKey": "$OPENROUTER_API_KEY",
+      "models": [
+        {
+          "id": "stealth/ox-alpha",
+          "name": "Ox Alpha",
+          "reasoning": true,
+          "input": [
+            "text",
+            "image"
+          ],
+          "contextWindow": 1048576,
+          "maxTokens": 131072,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0
+          },
+          "compat": {
+            "thinkingFormat": "openrouter"
+          },
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": null,
+            "high": "high",
+            "xhigh": null,
+            "max": "max"
+          }
+        }
+      ]
+    },
+    "labyrinth": {
+      "baseUrl": "https://api.labyrinth.moe/v1",
+      "api": "openai-responses",
+      "models": [
+        {
+          "id": "gpt-6-astra",
+          "name": "GPT-6 Astra",
+          "reasoning": true,
+          "contextWindow": 272000,
+          "maxTokens": 128000,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": "xhigh",
+            "max": "max"
+          },
+          "input": [
+            "text",
+            "image"
+          ]
+        },
+        {
+          "id": "gpt-5.6-luna",
+          "name": "GPT-5.6 Luna",
+          "reasoning": true,
+          "contextWindow": 200000,
+          "maxTokens": 32768,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": "xhigh",
+            "max": "max"
+          },
+          "input": [
+            "text",
+            "image"
+          ]
+        },
+        {
+          "id": "gpt-5.6-terra",
+          "name": "GPT-5.6 Terra",
+          "reasoning": true,
+          "contextWindow": 200000,
+          "maxTokens": 32768,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": "xhigh",
+            "max": "max"
+          },
+          "input": [
+            "text",
+            "image"
+          ]
+        },
+        {
+          "id": "gpt-5.6-sol",
+          "name": "GPT-5.6 Sol",
+          "reasoning": true,
+          "contextWindow": 200000,
+          "maxTokens": 32768,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": "xhigh",
+            "max": "max"
+          },
+          "input": [
+            "text",
+            "image"
+          ]
+        },
+        {
+          "id": "gpt-5.5",
+          "name": "GPT-5.5",
+          "reasoning": true,
+          "contextWindow": 200000,
+          "maxTokens": 32768,
+          "thinkingLevelMap": {
+            "off": null,
+            "minimal": null,
+            "low": "low",
+            "medium": "medium",
+            "high": "high",
+            "xhigh": "xhigh",
+            "max": null
+          },
+          "input": [
+            "text",
+            "image"
+          ]
+        }
+      ]
+    },
     "zai": {
       "baseUrl": "https://api.z.ai/api/paas/v4",
       "api": "openai-completions",
@@ -198,7 +382,9 @@
           "id": "glm-4.7-flash",
           "name": "GLM-4.7-Flash",
           "reasoning": true,
-          "input": ["text"],
+          "input": [
+            "text"
+          ],
           "contextWindow": 128000,
           "maxTokens": 32768,
           "compat": {
@@ -224,7 +410,9 @@
           "id": "gemini-3.5-flash",
           "name": "Gemini 3.5 Flash (CPA)",
           "reasoning": false,
-          "input": ["text"],
+          "input": [
+            "text"
+          ],
           "contextWindow": 200000,
           "maxTokens": 32768,
           "thinkingLevelMap": {
@@ -240,7 +428,9 @@
           "id": "gemini-3.6-flash",
           "name": "Gemini 3.6 Flash (CPA)",
           "reasoning": false,
-          "input": ["text"],
+          "input": [
+            "text"
+          ],
           "contextWindow": 200000,
           "maxTokens": 32768,
           "thinkingLevelMap": {
@@ -256,7 +446,9 @@
           "id": "gemini-3.1-flash-lite",
           "name": "Gemini 3.1 Flash Lite (CPA)",
           "reasoning": false,
-          "input": ["text"],
+          "input": [
+            "text"
+          ],
           "contextWindow": 200000,
           "maxTokens": 32768,
           "thinkingLevelMap": {
@@ -265,103 +457,6 @@
             "medium": null,
             "high": null,
             "xhigh": null,
-            "max": null
-          }
-        }
-      ]
-    },
-    "openrouter": {
-      "baseUrl": "https://openrouter.ai/api/v1",
-      "api": "openai-completions",
-      "apiKey": "$OPENROUTER_API_KEY",
-      "models": [
-        {
-          "id": "stealth/ox-alpha",
-          "name": "Ox Alpha",
-          "reasoning": true,
-          "input": ["text", "image"],
-          "contextWindow": 1048576,
-          "maxTokens": 131072,
-          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 },
-          "compat": { "thinkingFormat": "openrouter" },
-          "thinkingLevelMap": {
-            "off": null,
-            "minimal": null,
-            "low": "low",
-            "medium": null,
-            "high": "high",
-            "xhigh": null,
-            "max": "max"
-          }
-        }
-      ]
-    },
-    "labyrinth": {
-      "baseUrl": "https://api.labyrinth.moe/v1",
-      "api": "openai-completions",
-      "apiKey": "$LABYRINTH_API_KEY",
-      "models": [
-        {
-          "id": "gpt-5.6-luna",
-          "name": "GPT-5.6 Luna",
-          "reasoning": true,
-          "contextWindow": 200000,
-          "maxTokens": 32768,
-          "thinkingLevelMap": {
-            "off": null,
-            "minimal": null,
-            "low": "low",
-            "medium": "medium",
-            "high": "high",
-            "xhigh": "xhigh",
-            "max": "max"
-          }
-        },
-        {
-          "id": "gpt-5.6-terra",
-          "name": "GPT-5.6 Terra",
-          "reasoning": true,
-          "contextWindow": 200000,
-          "maxTokens": 32768,
-          "thinkingLevelMap": {
-            "off": null,
-            "minimal": null,
-            "low": "low",
-            "medium": "medium",
-            "high": "high",
-            "xhigh": "xhigh",
-            "max": "max"
-          }
-        },
-        {
-          "id": "gpt-5.6-sol",
-          "name": "GPT-5.6 Sol",
-          "reasoning": true,
-          "contextWindow": 200000,
-          "maxTokens": 32768,
-          "thinkingLevelMap": {
-            "off": null,
-            "minimal": null,
-            "low": "low",
-            "medium": "medium",
-            "high": "high",
-            "xhigh": "xhigh",
-            "max": "max"
-          }
-        },
-        {
-          "id": "gpt-5.5",
-          "name": "GPT-5.5",
-          "reasoning": true,
-          "contextWindow": 200000,
-          "maxTokens": 32768,
-          "thinkingLevelMap": {
-            "off": null,
-            "minimal": null,
-            "low": "low",
-            "medium": "medium",
-            "high": "high",
-            "xhigh": "xhigh",
             "max": null
           }
         }

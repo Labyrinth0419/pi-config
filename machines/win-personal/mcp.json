@@ -2,7 +2,39 @@
   "mcpServers": {
     "drawio": {
       "command": "node",
-      "args": ["C:\\Users\\lenovo\\.codex\\mcp-servers\\drawio-mcp\\mcp-tool-server\\src\\index.js"]
+      "args": [
+        "C:\\Users\\lenovo\\.codex\\mcp-servers\\drawio-mcp\\mcp-tool-server\\src\\index.js"
+      ]
+    },
+    "shuiyuan": {
+      "url": "https://mcp.labyrinth.moe/shuiyuan/mcp",
+      "auth": "bearer",
+      "bearerTokenStore": true,
+      "directTools": true,
+      "lifecycle": "lazy",
+      "requestTimeoutMs": 60000
+    },
+    "xhs": {
+      "url": "https://mcp.labyrinth.moe/xhs/mcp",
+      "auth": "bearer",
+      "bearerTokenStore": true,
+      "directTools": true,
+      "lifecycle": "lazy",
+      "requestTimeoutMs": 60000
+    },
+    "ida-pro-mcp": {
+      "url": "http://127.0.0.1:13337/mcp",
+      "directTools": false,
+      "lifecycle": "lazy",
+      "requestTimeoutMs": 60000
+    },
+    "files": {
+      "url": "https://mcp.labyrinth.moe/files",
+      "auth": "bearer",
+      "bearerTokenStore": true,
+      "directTools": true,
+      "lifecycle": "lazy",
+      "requestTimeoutMs": 120000
     }
   }
 }
