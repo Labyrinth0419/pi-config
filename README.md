@@ -54,15 +54,16 @@ cd pi-config
 | `web-search.json` | web_search 自动摘要、摘要模型与摘要推理级别 |
 | `pi-blackhole/pi-blackhole-config.json` | blackhole 压缩/记忆 worker 基础模型 |
 | `keybindings.json` | 快捷键(ctrl+p 等已避免与模型切换冲突) |
-| `extensions/` | 本地扩展:slow-mode / notify / clipboard / rewind / branch-sessions / stash / environment-context(精选自 comonad/pi-config,MIT) |
-| `skills/` | code-review / research / diagnosing-bugs / prototype(精选自 mattpocock/skills,经 comonad vendored,MIT) |
+| `extensions/` | 本地扩展:slow-mode / notify / clipboard / rewind / branch-sessions / stash / environment-context / fast-mode / labyrinth-images-provider(部分精选自 comonad/pi-config,MIT) |
+| `skills/` | code-review / research / diagnosing-bugs / prototype / fast-mode(前四项精选自 mattpocock/skills,经 comonad vendored,MIT) |
+| `agents/` | `worker-fast` 子代理定义;对应优先级请求脚本保存在 `skills/fast-mode/scripts/` |
 | `prompts/` | 交接模板(handoff, pickup) |
 | `vendor/plannotator/` | 计划模式扩展源码(入库保存;当前 setup 跳过自动构建/安装) |
 | `pi-thread-goal` / `pi-btw` / `@narumitw/pi-btw` | 社区扩展:持久化 `/goal`、独立 `/btw` side session 与轻量 `/btw` side question,由 setup 自动安装 |
 | `pi-mem-cc` / `pi-ssh-remote` | 记忆与 SSH 远程扩展,由 setup 自动安装 |
 | `planning-with-files` / `pi-todo-rail` | 文件化规划与分支感知 Todo 扩展,由 setup 自动安装 |
 | `@eko24ive/pi-ask` | 社区问答扩展,替代本机自写的 `questionnaire.ts`,由 setup 自动安装 |
-| `machines/win-personal/` | Windows:drawio MCP(引用 `~/.codex` 本地路径) |
+| `machines/win-personal/` | Windows:drawio MCP(引用 `~/.codex` 本地路径)、`user-pwsh` 本机 PowerShell 操作覆盖 |
 | `machines/linux-personal/` | 直接用核心配置 |
 | `machines/linux-headless/` | 无头服务器:默认 deepseek、thinking high |
 | `setup.sh` / `setup.ps1` | 一键部署 |

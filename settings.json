@@ -1,7 +1,7 @@
 {
   "theme": "light/dark",
   "defaultProvider": "labyrinth",
-  "defaultModel": "gpt-5.6-luna",
+  "defaultModel": "gpt-6-sol",
   "defaultThinkingLevel": "medium",
   "enabledModels": [
     "xiaomi/mimo-v2.5",
@@ -12,6 +12,9 @@
     "lucen/gpt-5.6-sol",
     "labyrinth/gpt-5.6-luna",
     "labyrinth/gpt-6-astra",
+    "labyrinth/gpt-6.1-sol",
+    "labyrinth/gpt-6-luna",
+    "labyrinth/gpt-6-sol",
     "labyrinth/gpt-5.6-terra",
     "labyrinth/gpt-5.6-sol",
     "labyrinth/gpt-5.5",
@@ -20,8 +23,9 @@
     "google/gemini-3.1-flash-lite"
   ],
   "editorPaddingX": 1,
-  "fullscreenScrollbar": "auto",
-  "tuiMode": "regular",
+  "fullscreenScrollbar": "hidden",
+  "tuiMode": "fullscreen",
+  "fullscreenCopyOnSelect": false,
   "steeringMode": "all",
   "followUpMode": "all",
   "pi-blackhole": {

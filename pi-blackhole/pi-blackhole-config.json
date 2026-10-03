@@ -14,6 +14,7 @@
   "observeAfterTokens": 15000,
   "reflectAfterTokens": 25000,
   "compactAfterTokens": 81000,
+  "compactAfterRatio": 0.8,
   "observationsPoolMaxTokens": 20000,
   "fullFoldAlways": true,
   "observationsPoolTargetTokens": 10000,
@@ -24,6 +25,7 @@
   "observerChunkMaxTokens": 40000,
   "observerPreambleMaxTokens": 0,
   "agentMaxTurns": 16,
-  "memory": true,
+  "memory": false,
+  "statusBar": false,
   "debugLog": false
 }

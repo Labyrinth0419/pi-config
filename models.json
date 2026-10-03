@@ -273,6 +273,33 @@
       "api": "openai-responses",
       "models": [
         {
+          "id": "gpt-6.1-sol",
+          "name": "GPT-6.1 Sol",
+          "reasoning": true,
+          "contextWindow": 272000,
+          "maxTokens": 128000,
+          "thinkingLevelMap": { "off": null, "minimal": null, "low": "low", "medium": "medium", "high": "high", "xhigh": "xhigh", "max": "max" },
+          "input": ["text", "image"]
+        },
+        {
+          "id": "gpt-6-luna",
+          "name": "GPT-6 Luna",
+          "reasoning": true,
+          "contextWindow": 1050000,
+          "maxTokens": 128000,
+          "thinkingLevelMap": { "off": null, "minimal": null, "low": "low", "medium": "medium", "high": "high", "xhigh": "xhigh", "max": "max" },
+          "input": ["text", "image"]
+        },
+        {
+          "id": "gpt-6-sol",
+          "name": "GPT-6 Sol",
+          "reasoning": true,
+          "contextWindow": 272000,
+          "maxTokens": 128000,
+          "thinkingLevelMap": { "off": null, "minimal": null, "low": "low", "medium": "medium", "high": "high", "xhigh": "xhigh", "max": "max" },
+          "input": ["text", "image"]
+        },
+        {
           "id": "gpt-6-astra",
           "name": "GPT-6 Astra",
           "reasoning": true,
