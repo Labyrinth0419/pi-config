@@ -1,9 +1,5 @@
-# linux-headless — 无头远程服务器
+# 无头 Linux 服务器
 
-覆盖内容:
-- `settings.json`:默认 **deepseek**(便宜),thinking 降到 **high**；模型列表保留 deepseek，并额外启用 labyrinth 摘要模型
+`settings.json` 只设置深色主题。默认模型、思考等级和候选范围按 [MODELS.md](../../MODELS.md) 确认；可以向用户提出低成本模型方案，但不预设固定型号。
 
-注意:
-- 无 GUI,`notify`/主题类扩展无效但无害
-- `pi-web-access` 的 ffmpeg/yt-dlp 按需安装
-- 服务器上通常没有 `~/.claude`,auth.json 需手动填或 `pi /login`
+按 [SETUP.md](../../SETUP.md) 确认包和资源范围。没有 GUI 的机器先核查桌面通知扩展是否适用；pi-web-access 使用的视频工具、OCR 后端等依赖按需要安装。认证使用用户选择的本机登录或环境变量，不从个人机器复制。

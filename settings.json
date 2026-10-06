@@ -1,41 +1,9 @@
 {
   "theme": "light/dark",
-  "defaultProvider": "labyrinth",
-  "defaultModel": "gpt-6-sol",
-  "defaultThinkingLevel": "medium",
-  "enabledModels": [
-    "xiaomi/mimo-v2.5",
-    "xiaomi/mimo-v2.5-pro",
-    "xiaomi/mimo-v2.5-pro-ultraspeed",
-    "deepseek/deepseek-v4-flash",
-    "deepseek/deepseek-v4-pro",
-    "lucen/gpt-5.6-sol",
-    "labyrinth/gpt-5.6-luna",
-    "labyrinth/gpt-6-astra",
-    "labyrinth/gpt-6.1-sol",
-    "labyrinth/gpt-6-luna",
-    "labyrinth/gpt-6-sol",
-    "labyrinth/gpt-5.6-terra",
-    "labyrinth/gpt-5.6-sol",
-    "labyrinth/gpt-5.5",
-    "openrouter/stealth/ox-alpha",
-    "zai/glm-4.7-flash",
-    "google/gemini-3.1-flash-lite"
-  ],
   "editorPaddingX": 1,
   "fullscreenScrollbar": "hidden",
   "tuiMode": "fullscreen",
   "fullscreenCopyOnSelect": false,
   "steeringMode": "all",
-  "followUpMode": "all",
-  "pi-blackhole": {
-    "dropperFallbackModels": [
-      {
-        "provider": "deepseek",
-        "id": "deepseek-v4-flash",
-        "thinking": "low",
-        "cooldownHours": 0.5
-      }
-    ]
-  }
+  "followUpMode": "all"
 }

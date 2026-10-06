@@ -1,21 +1,9 @@
-# machines/ —— 按机器覆盖层
+# 机器配置
 
-`setup.sh` / `setup.ps1` 先把根目录的**核心配置**同步到 `~/.pi/agent/`,再应用当前机器的 overlay。
+[SETUP.md](../SETUP.md) 由 agent 先检查目标机器，再请用户确认覆盖层。没有自动检测或全量复制入口。
 
-**覆盖语义**:
-- `settings.json` 按“已有运行时配置 → 根目录核心配置 → 机器 overlay”的顺序合并，后者覆盖同名键
-- `machines/<name>/settings.json` 只需声明该机器的差异配置
-- `machines/<name>/mcp.json` 存在 → 复制为 `~/.pi/agent/mcp.json`
-- `machines/<name>/extensions/` 存在 → 复制并合并进 `~/.pi/agent/extensions/`
+- `win-personal`：现有唯一 Windows 个人机，保留单机路径和工具偏好。
+- `linux-personal`：有桌面的 Linux 个人机，目前没有额外 settings。
+- `linux-headless`：无头 Linux，使用深色主题；模型按 MODELS.md 单独确认。
 
-**机器选择**:
-1. 显式指定:`PI_MACHINE=win-personal ./setup.sh` 或 `.\setup.ps1 -Machine win-personal`
-2. 未指定时自动检测:
-   - Windows → `win-personal`
-   - Linux 无显示 + SSH/非交互 → `linux-headless`
-   - 其余 Linux → `linux-personal`
-
-目前:
-- `win-personal` — Windows 个人机。带 drawio MCP(引用 `~/.codex` 本地路径)
-- `linux-personal` — 有桌面的 Linux 个人机,直接用核心配置(无覆盖文件)
-- `linux-headless` — 无头服务器,默认 deepseek(便宜),thinking 降到 high
+通用 settings 和机器 settings 按键合并，不替换本机整个文件。机器 settings 不管理默认 provider、model、thinking 或 enabledModels。模型、认证、MCP、SSH 端点及运行时状态不在覆盖层中迁移。

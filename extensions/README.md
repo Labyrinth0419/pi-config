@@ -1,8 +1,7 @@
-# extensions/ —— 自写 pi 扩展
+# 本地 Pi 扩展
 
-放自己写的 TypeScript 扩展(纯 TS、跨平台)。每个 `.ts` 文件导出 `default function (pi: ExtensionAPI)`。
+仓库保存本地 TypeScript 扩展，Pi 在 agent 目录中发现其入口。agent 按 [SETUP.md](../SETUP.md) 逐文件比较和同步；更新后由用户执行 `/reload`。不全量覆盖目录或清理本机独有扩展。
 
-被 setup 脚本同步到 `~/.pi/agent/extensions/`,pi 启动自动加载,`/reload` 热重载。
+当前包括 branch-sessions、clipboard、environment-context、notify、rewind、stash，以及 fast、GPT 1M、Burn、slow-mode 模式。共享代码放在 `lib/`。四个模式命令只接受裸指令翻转，不接受 on/off/status。
 
-从 comonad/pi-config 里值得借鉴的纯 TS 扩展(按需复制进来):
-`slow-mode`(写文件前审查)、`notify`(桌面通知)、`clipboard`(OSC52)、`branch-sessions`、`rewind`、`stash`。
+图像 provider 不在本仓库管理范围。Windows 的 user-pwsh 扩展位于机器覆盖层；Herdr 管理的文件由 Herdr 安装流程提供。保留精选自 comonad/pi-config 的出处和许可证说明。

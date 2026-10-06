@@ -1,16 +1,40 @@
 # 密钥与运行时产物 —— 绝不上库
 auth.json
-sessions/
+auth.json.*
+mcp.json
+mcp-adapter.json
+mcp-auth.json
+mcp-auth.json.*
+mcp-cache.json
+mcp.log*
+models.json
+models.json.*
 models-store.json
+ssh-remote-config.json
+ssh-remote-known-hosts.json
+ssh-remote-memories/
+trust.json
+sessions/
+memory/
+missions/
+install/
+staging/
 bin/
 npm/
 node_modules/
+run-history.jsonl
+crashes.json
+pi-crash.log
+web-search-cache/
+pi-subagents/
+pi-blackhole/*-pending*.json
+pi-blackhole/pi-blackhole-cooldown.json
+pi-blackhole/*.bak*
+extensions/herdr-agent-state.ts
+extensions/labyrinth-images-provider.ts
+extensions/labyrinth-images.ts
 *.session.jsonl
 
 # vendor 扩展的构建产物(源码入库,dist 由 setup 构建)
 vendor/*/node_modules/
 vendor/*/dist/
-
-# plannotator 大体积 UI 资产(setup 时按 download-assets.txt 从上游拉取)
-vendor/plannotator/plannotator.html
-vendor/plannotator/review-editor.html
