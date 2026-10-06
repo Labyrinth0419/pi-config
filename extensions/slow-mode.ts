@@ -88,7 +88,11 @@ export default function slowMode(pi: ExtensionAPI) {
   pi.registerCommand("slow-mode", {
     description:
       "Toggle slow mode — approve non-read-only tools and review write/edit changes",
-    handler: async (_args, ctx) => {
+    handler: async (args, ctx) => {
+      if (args.trim()) {
+        ctx.ui.notify("用法：/slow-mode（不带参数，切换开关）。", "error");
+        return;
+      }
       // No-op in headless mode (no TUI available)
       if (!ctx.hasUI) {
         return;
