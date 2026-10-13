@@ -91,7 +91,7 @@ test("blackhole: staged models and ratio threshold replace the legacy single-mod
 test("setup: Windows remains a single-machine configuration", () => {
   const settings = JSON.parse(read("machines/win-personal/settings.json"));
   assert.equal(settings.shellPath, "E:\\Git\\usr\\bin\\bash.exe");
-  assert.deepEqual(settings.defaultTools, ["read", "powershell", "edit", "write"]);
+  assert.deepEqual(settings.defaultTools, ["read", "powershell", "edit", "write", "bash", "+codemode"]);
   assert.equal(existsSync(new URL("../machines/win-personal/extensions/user-pwsh.ts", import.meta.url)), true);
 });
 

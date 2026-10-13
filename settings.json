@@ -5,5 +5,10 @@
   "tuiMode": "fullscreen",
   "fullscreenCopyOnSelect": false,
   "steeringMode": "all",
-  "followUpMode": "all"
+  "followUpMode": "all",
+  "fullscreenWheelScrollLines": "auto",
+  "treeFilterMode": "default",
+  "doubleEscapeAction": "tree",
+  "defaultProjectTrust": "ask",
+  "enableInstallTelemetry": true
 }

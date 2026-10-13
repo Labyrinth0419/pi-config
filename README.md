@@ -18,7 +18,7 @@ git clone git@github.com:Labyrinth0419/pi-config.git
 
 - [MODELS.md](MODELS.md) 指导 agent 核实官方资料、网关支持和当前 Pi 模型目录，再确认默认模型、思考等级及候选范围。MiMo 当前目标为 v2.6 系列，后续新版本需重新核实。
 - 仓库不保存 `models.json`，通用 settings 和机器覆盖层不包含固定模型选择。本机仍可使用自己的模型配置。
-- 包清单在 [SETUP.md](SETUP.md#包清单)，以当前使用的包为基准，不固定 npm 发布版本；安装和更新都需要用户确认。
+- 包白名单在 [SETUP.md](SETUP.md#包清单)，npm 来源不锁定版本，安装或定向更新时追踪最新发布版；白名单不保证每个包已在本机安装，安装和更新都需要用户确认。
 - Pi 本身使用 latest 发布通道。agent 先检查实际安装方式和当前 CLI 文档，再询问是否升级，不另装一个版本覆盖已有安装器。
 
 ## 目录
